@@ -9,6 +9,7 @@
     "@react-spring/three": "^9.7.3",
     "@react-three/drei": "^9.80.0",
     "@react-three/fiber": "^8.13.6",
+    "@react-three/postprocessing": "^2.15.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -50,6 +51,7 @@
     ]
   },
   "devDependencies": {
-    "@types/three": "^0.154.0"
+    "@types/three": "^0.154.0",
+    "lamina": "^1.1.23"
   }
 }

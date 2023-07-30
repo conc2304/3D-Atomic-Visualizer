@@ -4,8 +4,8 @@ import { Mesh, Vector3 } from "three";
 import { Property } from "csstype";
 import { lighten } from "@mui/material";
 import { ColorTranslator } from "colortranslator";
-import { MeshDistortMaterial } from "@react-three/drei";
-
+import { MeshDistortMaterial, MeshWobbleMaterial } from "@react-three/drei";
+import { Select } from "@react-three/postprocessing";
 import { animated, useSpring } from "@react-spring/three";
 
 type CubeProps = MeshProps & {
@@ -13,9 +13,11 @@ type CubeProps = MeshProps & {
   hoverColor?: Property.Color;
   cubeSize?: number;
   rotationSpeed?: Vector3;
+  isActive?: boolean;
+  onClick?: () => void;
 };
 
-const AnimatedMesh = animated(MeshDistortMaterial);
+const AnimatedMesh = animated(MeshWobbleMaterial);
 
 type CubeArgs = [
   width?: number | undefined,
@@ -27,11 +29,13 @@ type CubeArgs = [
 ];
 
 export const Cube = (props: CubeProps) => {
-  const defaultRSpeed = 0.01;
+  const defaultRSpeed = 0;
   const {
     color = "blue",
     hoverColor = null,
     cubeSize = 2,
+    isActive = false,
+    onClick,
     rotationSpeed = new Vector3(defaultRSpeed, defaultRSpeed, defaultRSpeed),
     position,
   } = props;
@@ -39,18 +43,21 @@ export const Cube = (props: CubeProps) => {
   const meshRef = useRef<Mesh>(null);
   const cubeArgs: CubeArgs = [cubeSize, cubeSize, cubeSize];
   const [hovered, setHover] = useState(false);
-  const [active, setActive] = useState(false);
-  const springs = useSpring({ scale: active ? 1.2 : 1 });
-
-  const colorAsHex = new ColorTranslator(color).HEX;
+  const colorHex = new ColorTranslator(color).HEX;
   const hoverHex = hoverColor
     ? new ColorTranslator(hoverColor).HEX
-    : lighten(colorAsHex, 0.3);
+    : lighten(colorHex, 0.5);
+  const springs = useSpring({
+    scale: isActive ? 1.2 : 0.5,
+    color: hovered ? hoverHex : colorHex,
+  });
 
   useFrame(() => {
-    if (meshRef.current) meshRef.current.rotation.x += rotationSpeed.x;
-    if (meshRef.current) meshRef.current.rotation.y += rotationSpeed.y;
-    if (meshRef.current) meshRef.current.rotation.z += rotationSpeed.z;
+    if (!meshRef.current) return;
+
+    meshRef.current.rotation.x += rotationSpeed.x;
+    meshRef.current.rotation.y += rotationSpeed.y;
+    meshRef.current.rotation.z += rotationSpeed.z;
   });
 
   const handlePointerOver = () => {
@@ -62,21 +69,24 @@ export const Cube = (props: CubeProps) => {
   };
 
   const handleClick = () => {
-    setActive(!active);
+    onClick && onClick();
+    // setIsActive(!active);
   };
 
   return (
-    <animated.mesh
-      ref={meshRef}
-      onPointerOver={handlePointerOver}
-      onPointerOut={handlePointerOut}
-      onClick={handleClick}
-      scale={springs.scale}
-      position={position}
-    >
-      <boxGeometry args={cubeArgs} />
-      {/* @ts-expect-error not sure what this error is about */}
-      <AnimatedMesh color={!hovered ? colorAsHex : hoverHex} />
-    </animated.mesh>
+    <Select enabled={hovered}>
+      <animated.mesh
+        ref={meshRef}
+        onPointerOver={handlePointerOver}
+        onPointerOut={handlePointerOut}
+        onClick={handleClick}
+        scale={springs.scale}
+        position={position}
+      >
+        <boxGeometry args={cubeArgs} />
+        {/* @ts-ignore */}
+        <AnimatedMesh color={springs.color} />
+      </animated.mesh>
+    </Select>
   );
 };
