@@ -5,7 +5,6 @@ import { Property } from "csstype";
 import { lighten } from "@mui/material";
 import { ColorTranslator } from "colortranslator";
 import { MeshDistortMaterial, MeshWobbleMaterial } from "@react-three/drei";
-import { Select } from "@react-three/postprocessing";
 import { animated, useSpring } from "@react-spring/three";
 
 type CubeProps = MeshProps & {
@@ -29,7 +28,7 @@ type CubeArgs = [
 ];
 
 export const Cube = (props: CubeProps) => {
-  const defaultRSpeed = 0;
+  const defaultRSpeed = 0.01;
   const {
     color = "blue",
     hoverColor = null,
@@ -43,6 +42,7 @@ export const Cube = (props: CubeProps) => {
   const meshRef = useRef<Mesh>(null);
   const cubeArgs: CubeArgs = [cubeSize, cubeSize, cubeSize];
   const [hovered, setHover] = useState(false);
+  const [rotationActive, setRotationActive] = useState(false);
   const colorHex = new ColorTranslator(color).HEX;
   const hoverHex = hoverColor
     ? new ColorTranslator(hoverColor).HEX
@@ -55,9 +55,11 @@ export const Cube = (props: CubeProps) => {
   useFrame(() => {
     if (!meshRef.current) return;
 
-    meshRef.current.rotation.x += rotationSpeed.x;
-    meshRef.current.rotation.y += rotationSpeed.y;
-    meshRef.current.rotation.z += rotationSpeed.z;
+    if (rotationActive) {
+      meshRef.current.rotation.x += rotationSpeed.x;
+      meshRef.current.rotation.y += rotationSpeed.y;
+      meshRef.current.rotation.z += rotationSpeed.z;
+    }
   });
 
   const handlePointerOver = () => {
@@ -71,22 +73,23 @@ export const Cube = (props: CubeProps) => {
   const handleClick = () => {
     onClick && onClick();
     // setIsActive(!active);
+    if (isActive) {
+      setRotationActive(!rotationActive);
+    }
   };
 
   return (
-    <Select enabled={hovered}>
-      <animated.mesh
-        ref={meshRef}
-        onPointerOver={handlePointerOver}
-        onPointerOut={handlePointerOut}
-        onClick={handleClick}
-        scale={springs.scale}
-        position={position}
-      >
-        <boxGeometry args={cubeArgs} />
-        {/* @ts-ignore */}
-        <AnimatedMesh color={springs.color} />
-      </animated.mesh>
-    </Select>
+    <animated.mesh
+      ref={meshRef}
+      onPointerOver={handlePointerOver}
+      onPointerOut={handlePointerOut}
+      onClick={handleClick}
+      scale={springs.scale}
+      position={position}
+    >
+      <boxGeometry args={cubeArgs} />
+      {/* @ts-ignore */}
+      <AnimatedMesh color={springs.color} />
+    </animated.mesh>
   );
 };
