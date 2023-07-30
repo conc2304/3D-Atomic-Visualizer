@@ -1,24 +1,17 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Vector3 } from "three";
+import "./App.css";
+import { Cube } from "./components/cube";
+import { Canvas } from "@react-three/fiber";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Canvas>
+        <ambientLight />
+        <pointLight position={[10, 10, 10]} />
+        <Cube color="orange" position={new Vector3(-1.2, 0, 0)} />
+        <Cube color="orange" position={new Vector3(1.3, 0, 0)} />
+      </Canvas>
     </div>
   );
 }
