@@ -1,8 +1,8 @@
 import { animated, useSpring } from "@react-spring/three";
 import { useRef, useState } from "react";
-import { Mesh, Vector3 } from "three";
+import { Vector3 } from "three";
 import { Cube } from "./cube";
-import { degToRad, radToDeg } from "three/src/math/MathUtils";
+import { degToRad } from "three/src/math/MathUtils";
 
 type ObjectCarouselProps = {
   objects: JSX.Element[];
@@ -14,12 +14,6 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const currAngle = useRef(offset);
-
-  const getAngle = (activeIndex: number, direction = -1) => {
-    const angle = (2 * Math.PI * activeIndex * direction) / objects.length;
-    console.log(radToDeg(angle + offset));
-    return angle + offset;
-  };
 
   const [springs, api] = useSpring(() => ({
     from: {
