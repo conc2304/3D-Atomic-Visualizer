@@ -1,0 +1,17 @@
+export const ElementInfoKeys = [
+  "name",
+  "appearance",
+  "atomic_mass",
+  "boil",
+  "category",
+  "density",
+  "discovered_by",
+  "melt",
+  "named_by",
+  "number",
+  "period",
+  "phase",
+  "summary",
+  "symbol",
+  "electron_configuration",
+];

@@ -9,36 +9,36 @@ type ObjectCarouselProps = {
   objects: JSX.Element[];
   radius?: number;
   onElementChange?: (elementId: number) => void;
+  activeIndex?: number;
 };
 
 export const ObjectCarousel = (props: ObjectCarouselProps) => {
-  const { objects, onElementChange, radius = 5 } = props;
-  const offset = degToRad(180 / objects.length) + degToRad(360); // put the first item in the front
+  const { objects, onElementChange, radius = 5, activeIndex = 0 } = props;
+  // const offset = degToRad(180 / objects.length) + degToRad(360); // turn everything to face the camera
 
-  const [activeIndex, setActiveIndex] = useState(2);
   const [visualizerActive, setVisualizerActive] = useState(false);
-  const currAngle = useRef(offset);
+  const visibleItemRange = 2;
+  // const currAngle = useRef(offset);
   const currRotation = useRef(0);
 
-  const [springs, api] = useSpring(() => ({
-    from: {
-      carouselRotation: offset,
-      itemRotation: [0, 0, 0],
-    },
-    config: {
-      mass: 4,
-      tension: 800,
-      friction: 50,
-    },
-  }));
+  // const [springs, api] = useSpring(() => ({
+  //   from: {
+  //     carouselRotation: offset,
+  //     itemRotation: [0, 0, 0],
+  //   },
+  //   config: {
+  //     mass: 4,
+  //     tension: 800,
+  //     friction: 50,
+  //   },
+  // }));
 
   const getItemPosition = (index: number) => {
-    console.log("getItemPosition", index);
+    // console.log("getItemPosition", index);
     const offScreenX = 20;
     if (index > 0 && index < objects.length - 1) {
       const theta = (2 * Math.PI * index) / 3;
       const spacing = index !== activeIndex ? 4 : 0;
-      console.log(index);
       const spacingDir = index > activeIndex ? 1 : -1;
 
       return new Vector3(
@@ -56,33 +56,33 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
   };
 
   const handleOnItemClick = (nextActiveIndex: number, elementId: number) => {
-    let delta: number;
-    //  check for index wrap around and only increment by one in either direction
-    if (activeIndex === 0 && nextActiveIndex === objects.length - 1) {
-      delta = 1;
-    } else if (activeIndex === objects.length - 1 && nextActiveIndex === 0) {
-      delta = -1;
-    } else {
-      const direction = -1;
-      delta = direction * (nextActiveIndex - activeIndex);
-    }
+    // let delta: number;
+    // //  check for index wrap around and only increment by one in either direction
+    // if (activeIndex === 0 && nextActiveIndex === objects.length - 1) {
+    //   delta = 1;
+    // } else if (activeIndex === objects.length - 1 && nextActiveIndex === 0) {
+    //   delta = -1;
+    // } else {
+    //   const direction = -1;
+    //   delta = direction * (nextActiveIndex - activeIndex);
+    // }
 
-    const nextAngle =
-      currAngle.current + delta * degToRad(360 / objects.length);
+    // const nextAngle =
+    //   currAngle.current + delta * degToRad(360 / objects.length);
 
-    const nextRotation =
-      currRotation.current + delta * degToRad(-360 / objects.length);
+    // const nextRotation =
+    //   currRotation.current + delta * degToRad(-360 / objects.length);
 
-    currRotation.current = nextRotation;
+    // currRotation.current = nextRotation;
 
-    currAngle.current = nextAngle;
-    api.start({
-      to: {
-        carouselRotation: nextAngle,
-        itemRotation: [nextRotation, 0, 0],
-      },
-    });
-    setActiveIndex(nextActiveIndex);
+    // currAngle.current = nextAngle;
+    // api.start({
+    //   to: {
+    //     carouselRotation: nextAngle,
+    //     itemRotation: [nextRotation, 0, 0],
+    //   },
+    // });
+    // setActiveIndex(nextActiveIndex);
 
     onElementChange && onElementChange(elementId);
   };
@@ -90,25 +90,41 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
   return (
     <>
       <group rotation-y={-Math.PI / objects.length} position-y={-0.01}>
-        <animated.group rotation-y={offset}>
+        <animated.group rotation-y={0}>
           {/* <animated.group rotation-y={springs.carouselRotation}> */}
           {objects.map((MeshObject, i) => {
             const isActiveIndex = i === activeIndex;
-            return cloneElement(MeshObject, {
-              position: getItemPosition(i),
-              // rotationY: currRotation.current,
-              hide: visualizerActive && !isActiveIndex,
-              key: `carouselItem-${i}`,
-              onClick: (elementId: number): void => {
-                console.log("cloner", elementId, MeshObject.props.name);
-                handleOnItemClick(i, elementId);
-                MeshObject.props.onElementSelect(elementId);
-              },
-              onVisualizerActiveChange: (isActive: boolean) => {
-                setVisualizerActive(isActive);
-              },
-              isActive: isActiveIndex,
-            });
+
+            // only show +- the visible item range
+            if (
+              i > activeIndex + visibleItemRange ||
+              i < activeIndex - visibleItemRange
+            )
+              return <></>;
+
+            return (
+              <animated.group
+                key={`anim-g-${i}`}
+                position-x={0 + (i - activeIndex) * 6.5}
+                position-y={isActiveIndex ? 2 : -1}
+                position-z={isActiveIndex ? 4 : -3}
+                rotation-x={!isActiveIndex ? degToRad(-90) : 0}
+              >
+                {cloneElement(MeshObject, {
+                  ...MeshObject.props,
+                  hide: visualizerActive && !isActiveIndex,
+                  key: `carouselItem-${i}`,
+                  onClick: (elementId: number): void => {
+                    handleOnItemClick(i, elementId);
+                    MeshObject.props.onElementSelect(elementId);
+                  },
+                  onVisualizerActiveChange: (isActive: boolean) => {
+                    setVisualizerActive(isActive);
+                  },
+                  isActive: isActiveIndex,
+                })}
+              </animated.group>
+            );
           })}
         </animated.group>
       </group>

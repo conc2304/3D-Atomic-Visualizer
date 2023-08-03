@@ -40,7 +40,7 @@ const ElementBackDrop = (props: ElementBackDropProps) => {
 
   return (
     <RoundedBox ref={meshRef} args={[10, 8, 0.5]} radius={0.2} smoothness={4}>
-      {/* @ts-expect-error */}
+      {/* @ts-ignore */}
       <animated.meshStandardMaterial color={springs.color} />
     </RoundedBox>
   );
@@ -151,8 +151,9 @@ export const ElementTag = (props: ElementTagProps) => {
     <>
       <animated.group
         position={position}
-        rotation={[0, 0, 0]}
+        // rotation={[0, 0, 0]}
         rotation-y={springs.rotationY}
+        rotation-x={isActive ? degToRad(-15) : 0}
         scale={springs.scale}
         onPointerOver={handlePointerOver}
         onPointerOut={handlePointerOut}
@@ -165,31 +166,38 @@ export const ElementTag = (props: ElementTagProps) => {
         />
         <group position={[-2.7, 0, 1.1]}>
           <Text
-            text={symbol}
-            color={textColor}
-            size={1.5}
-            height={1}
-            position={[symbolPosMap[symbol.length as 1 | 2 | 3] || 0.5, 1.5, 0]}
-          />
-          <Text
             text={atomicNumber.toString()}
             color={textColor}
             size={0.5}
             height={0.15}
-            position={[-1.5, 3.5, 0]}
+            position={[-1.5, 3, -0.7]}
           />
-          <Text
-            text={name}
-            size={0.5}
-            height={0.1}
-            position={[getXPosition(name), -0.5, 0]}
-          />
+
+          {/* shift this text down for hard coded recentering - centering kinda moves when we rescale  */}
+          <group position={[0, -1, 0]}>
+            <Text
+              text={symbol}
+              color={textColor}
+              size={1.5}
+              height={1}
+              position={[
+                symbolPosMap[symbol.length as 1 | 2 | 3] || 0.5,
+                1.5,
+                -1,
+              ]}
+            />
+            <Text
+              text={name}
+              size={0.5}
+              height={0.1}
+              position={[getXPosition(name), -0.5, -0.5]}
+            />
+          </group>
+          {/* Atom Visualizer "Icon Button" */}
           <animated.group
-            // scale={1}
             rotation={[0, 0, 0]}
-            // rotation-x={0}
             scale={springs.visualizerScale}
-            position={[2.5, -1.25, 2]}
+            position={[2.5, -4, 6]}
           >
             {isActive && (
               <mesh
