@@ -3,6 +3,7 @@ import { cloneElement, useRef, useState } from "react";
 import { Vector3 } from "three";
 import { Cube } from "./cube";
 import { degToRad } from "three/src/math/MathUtils";
+import { Text } from "./text";
 
 type ObjectCarouselProps = {
   objects: JSX.Element[];
@@ -15,10 +16,12 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const currAngle = useRef(offset);
+  const currRotation = useRef(0);
 
   const [springs, api] = useSpring(() => ({
     from: {
       carouselRotation: offset,
+      itemRotation: [0, 0, 0],
     },
     config: {
       mass: 4,
@@ -47,10 +50,16 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
     const nextAngle =
       currAngle.current + delta * degToRad(360 / objects.length);
 
+    const nextRotation =
+      currRotation.current + delta * degToRad(-360 / objects.length);
+
+    currRotation.current = nextRotation;
+
     currAngle.current = nextAngle;
     api.start({
       to: {
         carouselRotation: nextAngle,
+        itemRotation: [nextRotation, 0, 0],
       },
     });
     setActiveIndex(nextActiveIndex);
@@ -62,23 +71,31 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
         <animated.group rotation-y={springs.carouselRotation}>
           {objects.map((MeshObject, i) => {
             const isActiveIndex = i === activeIndex;
+            console.log("map", i);
 
+            console.log(currRotation.current);
+
+            // return (
+            //   <animated.group
+            //     key={`carouselItem-${i}-group`}
+            //     rotation-y={springs.itemRotation}
+            //   >
+            //     <Text text="TESTING" />
+            //     {cloneElement(MeshObject, {
+            //       position: getItemPosition(i),
+            //       key: `carouselItem-${i}`,
+            //       onClick: () => handleOnItemClick(i),
+            //       isActive: isActiveIndex,
+            //     })}
+            //   </animated.group>
+            // );
             return cloneElement(MeshObject, {
               position: getItemPosition(i),
+              rotationY: currRotation.current,
               key: `carouselItem-${i}`,
               onClick: () => handleOnItemClick(i),
               isActive: isActiveIndex,
             });
-
-            // return (
-            //   <Cube
-            //     position={getItemPosition(i)}
-            //     key={`carouseItem-${i}`}
-            //     onClick={() => handleOnItemClick(i)}
-            //     isActive={isActiveIndex}
-            //     color={isActiveIndex ? colorMap[i] : colorMap[i] || "grey"}
-            //   />
-            // );
           })}
         </animated.group>
       </group>

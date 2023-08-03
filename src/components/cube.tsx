@@ -38,6 +38,7 @@ export const Cube = (props: CubeProps) => {
     isActive = false,
     onClick,
     position = new Vector3(0, 0, 0),
+    withPhysics = false,
   } = props;
 
   // const meshRef = useRef<Mesh>(null);

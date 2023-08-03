@@ -57,6 +57,10 @@ export const Scene = () => {
           atomicNumber={number}
           electronConfig={electronConfig}
           isActive={activeElementIndex === number}
+          onClick={() => {
+            console.log("SCENE Click");
+            setActiveElementIndex(number);
+          }}
         />
       );
     });
