@@ -58,6 +58,8 @@ type ElementTagProps = MeshProps & {
   tagBackground?: Property.Color;
   textColor?: Property.Color;
   onClick?: (elemId: number) => void;
+  onVisualizerActiveChange?: (isActive: boolean) => void;
+  hide?: false;
   rotationY?: number;
 };
 
@@ -74,8 +76,10 @@ export const ElementTag = (props: ElementTagProps) => {
     position = [0, 0, 0],
     isActive = false,
     onClick,
+    onVisualizerActiveChange,
     rotation = [0, 0, 0],
     rotationY = 0,
+    hide = false,
   } = props;
 
   const [hovered, setHover] = useState(false);
@@ -88,7 +92,7 @@ export const ElementTag = (props: ElementTagProps) => {
     : lighten(colorHex, 0.7);
 
   const springs = useSpring({
-    scale: visualizerActive ? 0 : isActive ? 1 : 0.5,
+    scale: visualizerActive || hide ? 0 : isActive ? 1 : 0.5,
     rotationY: rotationY,
     visualizerAngle: degToRad(90),
     visualizerScale: visualizerHovered ? 1.5 : 1,
@@ -107,10 +111,12 @@ export const ElementTag = (props: ElementTagProps) => {
   };
 
   const handlePointerOver = () => {
+    document.body.style.cursor = "pointer";
     setHover(true);
   };
 
   const handlePointerOut = () => {
+    document.body.style.cursor = "default";
     setHover(false);
   };
 
@@ -122,12 +128,14 @@ export const ElementTag = (props: ElementTagProps) => {
 
     if (isActive) {
       setVisualizerActive(true);
+      onVisualizerActiveChange && onVisualizerActiveChange(true);
     }
   };
 
   useEffect(() => {
     if (!isActive) {
       setVisualizerActive(false);
+      onVisualizerActiveChange && onVisualizerActiveChange(false);
     }
   }, [isActive]);
 
@@ -186,12 +194,16 @@ export const ElementTag = (props: ElementTagProps) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   setVisualizerActive(true);
+                  onVisualizerActiveChange && onVisualizerActiveChange(true);
                 }}
                 onPointerEnter={(e) => {
                   e.stopPropagation();
+                  document.body.style.cursor = "pointer";
+
                   setVisualizerHover(true);
                 }}
                 onPointerLeave={() => {
+                  document.body.style.cursor = "default";
                   setVisualizerHover(false);
                 }}
               >
@@ -212,13 +224,16 @@ export const ElementTag = (props: ElementTagProps) => {
           onClick={(e) => {
             e.stopPropagation();
             setVisualizerActive(false);
+            onVisualizerActiveChange && onVisualizerActiveChange(false);
           }}
           onPointerEnter={(e) => {
             e.stopPropagation();
             setVisualizerHover(true);
+            document.body.style.cursor = "pointer";
           }}
           onPointerLeave={() => {
             setVisualizerHover(false);
+            document.body.style.cursor = "default";
           }}
         >
           <Atom electronConfig={electronConfig} size={Number(atomicNumber)} />

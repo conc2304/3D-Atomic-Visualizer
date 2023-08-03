@@ -16,6 +16,7 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
   const offset = degToRad(180 / objects.length) + degToRad(360); // put the first item in the front
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const [visualizerActive, setVisualizerActive] = useState(false);
   const currAngle = useRef(offset);
   const currRotation = useRef(0);
 
@@ -71,17 +72,22 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
   return (
     <>
       <group rotation-y={-Math.PI / objects.length} position-y={-0.01}>
-        <animated.group rotation-y={springs.carouselRotation}>
+        <animated.group>
+          {/* <animated.group rotation-y={springs.carouselRotation}> */}
           {objects.map((MeshObject, i) => {
             const isActiveIndex = i === activeIndex;
             return cloneElement(MeshObject, {
               position: getItemPosition(i),
-              rotationY: currRotation.current,
+              // rotationY: currRotation.current,
+              hide: visualizerActive && !isActiveIndex,
               key: `carouselItem-${i}`,
               onClick: (elementId: number): void => {
                 console.log("cloner", elementId, MeshObject.props.name);
                 handleOnItemClick(i, elementId);
                 MeshObject.props.onClick(elementId);
+              },
+              onVisualizerActiveChange: (isActive: boolean) => {
+                setVisualizerActive(isActive);
               },
               isActive: isActiveIndex,
             });

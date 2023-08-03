@@ -42,6 +42,7 @@ export const Scene = () => {
     const listSize = periodicTableElements.length;
 
     // Calculate indices with modulo to handle looping
+    const indexMinus2 = (activeElementIndex - 2 + listSize) % listSize;
     const indexMinus1 = (activeElementIndex - 1 + listSize) % listSize;
     const indexPlus1 = (activeElementIndex + 1) % listSize;
     const indexPlus2 = (activeElementIndex + 2) % listSize;
@@ -51,6 +52,7 @@ export const Scene = () => {
       periodicTableElements[indexPlus1],
       periodicTableElements[indexPlus2],
       periodicTableElements[indexMinus1],
+      periodicTableElements[indexMinus2],
     ];
 
     const components = elements.map((element) => {
