@@ -14,13 +14,6 @@ import { PeriodicTableElement } from "../atom/types";
 import { electronStringToObject } from "../atom/utils";
 
 export const Scene = () => {
-  // const objects = [
-  //   <Cube color="red" />,
-  //   <Cube color="green" />,
-  //   <Cube color="blue" />,
-  //   <Cube color="yellow" />,
-  // ];
-
   const [periodicTableElements, setPeriodicTableElements] = useState<
     PeriodicTableElement[]
   >([]);
@@ -40,33 +33,48 @@ export const Scene = () => {
     getElementData();
   }, []);
 
-  const visibleElements = useMemo<PeriodicTableElement[]>(() => {
+  const visibleElements = useMemo<JSX.Element[]>(() => {
     if (!periodicTableElements) return [];
 
     const listSize = periodicTableElements.length;
-    return [
+    const elements = [
       periodicTableElements[activeElementIndex],
       periodicTableElements[(activeElementIndex + 1) % listSize],
       periodicTableElements[(activeElementIndex + 2) % listSize],
       periodicTableElements[(activeElementIndex + 3) % listSize],
     ];
+
+    const components = elements.map((element) => {
+      if (!element) return <></>;
+
+      const { name, electron_configuration, symbol, number } = element;
+      const electronConfig = electronStringToObject(electron_configuration);
+      return (
+        <ElementTag
+          key={symbol}
+          name={name}
+          symbol={symbol}
+          atomicNumber={number}
+          electronConfig={electronConfig}
+          isActive={activeElementIndex === number}
+        />
+      );
+    });
+    return components;
   }, [periodicTableElements, activeElementIndex]);
 
   return (
     <>
       {/* <OrbitControls /> */}
-      {/* <fog attach="fog" args={["red", 220, 220]} /> */}
       <color attach="background" args={["#191920"]} />
-      {/* <ambientLight intensity={0.1} />
-      <directionalLight position={[0, 20, 20]} intensity={1} /> */}
       <ambientLight intensity={1} />
       <directionalLight intensity={2} castShadow />
-      <pointLight
+      {/* <pointLight
         castShadow
         intensity={3}
         args={[0xff0000, 1, 100]}
         position={[-1, 3, 1]}
-      />
+      /> */}
       <spotLight
         castShadow
         intensity={1}
@@ -74,7 +82,6 @@ export const Scene = () => {
         position={[-1, 4, -1]}
         penumbra={1}
       />
-      {/* <ObjectCarousel objects={objects} /> */}
       <Text text="Atomic Visualizer" color="red" position={[-10, 7, -2]} />
       {/* <Atom
         electronConfig={{
@@ -82,26 +89,11 @@ export const Scene = () => {
           2: { s: 2, p: 6 },
         }}
       /> */}
-      {visibleElements &&
-        visibleElements.map((elementData) => {
-          if (!elementData) return <></>;
-          const { name, electron_configuration, symbol, number } = elementData;
-          const electronConfig = electronStringToObject(electron_configuration);
-          return (
-            <ElementTag
-              key={symbol}
-              name={name}
-              symbol={symbol}
-              atomicNumber={number}
-              electronConfig={electronConfig}
-            />
-          );
-        })}
+
+      <ObjectCarousel objects={visibleElements} radius={6} />
 
       <Floor position={new Vector3(0, -2.25, 0)} radius={12} thickness={0.2} />
-      {/* <ContactShadows scale={30} opacity={0.32} /> */}
       <Background />
-      {/* </Physics> */}
     </>
   );
 };

@@ -1,15 +1,16 @@
 import { animated, useSpring } from "@react-spring/three";
-import { useRef, useState } from "react";
+import { cloneElement, useRef, useState } from "react";
 import { Vector3 } from "three";
 import { Cube } from "./cube";
 import { degToRad } from "three/src/math/MathUtils";
 
 type ObjectCarouselProps = {
   objects: JSX.Element[];
+  radius?: number;
 };
 
 export const ObjectCarousel = (props: ObjectCarouselProps) => {
-  const { objects } = props;
+  const { objects, radius = 5 } = props;
   const offset = degToRad(180 / objects.length) + degToRad(360); // put the first item in the front
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -25,8 +26,6 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
       friction: 50,
     },
   }));
-
-  const radius = 5;
 
   const getItemPosition = (index: number) => {
     const theta = (2 * Math.PI * index) / objects.length;
@@ -56,7 +55,6 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
     });
     setActiveIndex(nextActiveIndex);
   };
-  const colorMap = ["red", "green", "yellow", "blue"];
 
   return (
     <>
@@ -65,22 +63,25 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
           {objects.map((MeshObject, i) => {
             const isActiveIndex = i === activeIndex;
 
-            return (
-              <Cube
-                position={getItemPosition(i)}
-                key={`carouseItem-${i}`}
-                onClick={() => handleOnItemClick(i)}
-                isActive={isActiveIndex}
-                color={isActiveIndex ? colorMap[i] : colorMap[i] || "grey"}
-              />
-            );
+            return cloneElement(MeshObject, {
+              position: getItemPosition(i),
+              key: `carouselItem-${i}`,
+              onClick: () => handleOnItemClick(i),
+              isActive: isActiveIndex,
+            });
+
+            // return (
+            //   <Cube
+            //     position={getItemPosition(i)}
+            //     key={`carouseItem-${i}`}
+            //     onClick={() => handleOnItemClick(i)}
+            //     isActive={isActiveIndex}
+            //     color={isActiveIndex ? colorMap[i] : colorMap[i] || "grey"}
+            //   />
+            // );
           })}
         </animated.group>
       </group>
-      {/* <mesh position={[0, -1.75, 0]}>
-        <cylinderGeometry args={[radius + 1.5, radius + 1.5, 0.25]} />
-        <meshLambertMaterial color={"#EEE"} />
-      </mesh> */}
     </>
   );
 };

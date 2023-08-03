@@ -9,11 +9,14 @@ import {
   PlaneGeometry,
   Mesh,
 } from "three";
+import { animated, config, useSpring } from "@react-spring/three";
 
 import { Box, RoundedBox } from "@react-three/drei";
 import { Text } from "../text";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ElectronConfiguration } from "../atom/types";
+import { ColorTranslator } from "colortranslator";
+import { lighten } from "@mui/material";
 
 type ElementTagProps = MeshProps & {
   name: string;
@@ -22,9 +25,37 @@ type ElementTagProps = MeshProps & {
   electronConfig: ElectronConfiguration;
   size?: Vector3;
   color?: Property.Color;
+  isActive: boolean;
+  hoverColor?: Property.Color;
+  onClick?: () => void;
 };
 export const ElementTag = (props: ElementTagProps) => {
-  const { name, symbol, atomicNumber, electronConfig, color = "white" } = props;
+  const {
+    name,
+    symbol,
+    atomicNumber,
+    electronConfig,
+    hoverColor,
+    color = "white",
+    position = [0, 0, 0],
+    isActive = false,
+  } = props;
+
+  const [hovered, setHover] = useState(false);
+
+  const colorHex = new ColorTranslator(color).HEX;
+
+  const hoverHex = hoverColor
+    ? new ColorTranslator(hoverColor).HEX
+    : lighten(colorHex, 0.7);
+
+  const springs = useSpring({
+    scale: isActive ? 1 : 0.5,
+    color: hovered ? hoverHex : colorHex,
+    warpFactor: !isActive ? 1 : 0,
+    wardSpeed: !isActive ? 1 : 0,
+    config: config.slow,
+  });
 
   const getXPosition = (str: string) => {
     const len = str.length;
@@ -38,7 +69,7 @@ export const ElementTag = (props: ElementTagProps) => {
   };
 
   return (
-    <group>
+    <animated.group position={position} scale={springs.scale}>
       <RoundedBox args={[10, 8, 0.5]} radius={0.2} smoothness={4}>
         <meshStandardMaterial color="orange" />
       </RoundedBox>
@@ -48,7 +79,7 @@ export const ElementTag = (props: ElementTagProps) => {
           color={color}
           size={1.5}
           height={1}
-          position={[0.5, 1.5, 1]}
+          position={[symbol.length === 2 ? 0.5 : 1.6, 1.5, 1]}
         />
         <Text
           text={atomicNumber.toString()}
@@ -64,6 +95,6 @@ export const ElementTag = (props: ElementTagProps) => {
           position={[getXPosition(name), -0.5, 1]}
         />
       </group>
-    </group>
+    </animated.group>
   );
 };
