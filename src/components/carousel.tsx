@@ -15,7 +15,7 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
   const { objects, onElementChange, radius = 5 } = props;
   const offset = degToRad(180 / objects.length) + degToRad(360); // put the first item in the front
 
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(2);
   const [visualizerActive, setVisualizerActive] = useState(false);
   const currAngle = useRef(offset);
   const currRotation = useRef(0);
@@ -33,8 +33,26 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
   }));
 
   const getItemPosition = (index: number) => {
-    const theta = (2 * Math.PI * index) / objects.length;
-    return new Vector3(Math.sin(theta) * radius, 0, Math.cos(theta) * radius);
+    console.log("getItemPosition", index);
+    const offScreenX = 20;
+    if (index > 0 && index < objects.length - 1) {
+      const theta = (2 * Math.PI * index) / 3;
+      const spacing = index !== activeIndex ? 4 : 0;
+      console.log(index);
+      const spacingDir = index > activeIndex ? 1 : -1;
+
+      return new Vector3(
+        spacing * spacingDir + Math.sin(theta + degToRad(120)) * radius,
+        0,
+        Math.cos(theta + degToRad(120)) * radius
+      );
+    } else if (index === 0) {
+      // put it off screen left
+      return new Vector3(-offScreenX, 0, 0);
+    } else {
+      return new Vector3(offScreenX, 0, 0);
+      // put it off screen right
+    }
   };
 
   const handleOnItemClick = (nextActiveIndex: number, elementId: number) => {
@@ -72,7 +90,7 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
   return (
     <>
       <group rotation-y={-Math.PI / objects.length} position-y={-0.01}>
-        <animated.group>
+        <animated.group rotation-y={offset}>
           {/* <animated.group rotation-y={springs.carouselRotation}> */}
           {objects.map((MeshObject, i) => {
             const isActiveIndex = i === activeIndex;
@@ -84,7 +102,7 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
               onClick: (elementId: number): void => {
                 console.log("cloner", elementId, MeshObject.props.name);
                 handleOnItemClick(i, elementId);
-                MeshObject.props.onClick(elementId);
+                MeshObject.props.onElementSelect(elementId);
               },
               onVisualizerActiveChange: (isActive: boolean) => {
                 setVisualizerActive(isActive);

@@ -58,6 +58,7 @@ type ElementTagProps = MeshProps & {
   tagBackground?: Property.Color;
   textColor?: Property.Color;
   onClick?: (elemId: number) => void;
+  onElementSelect?: (elemId: number) => void;
   onVisualizerActiveChange?: (isActive: boolean) => void;
   hide?: false;
   rotationY?: number;
@@ -76,6 +77,7 @@ export const ElementTag = (props: ElementTagProps) => {
     position = [0, 0, 0],
     isActive = false,
     onClick,
+    onElementSelect,
     onVisualizerActiveChange,
     rotation = [0, 0, 0],
     rotationY = 0,

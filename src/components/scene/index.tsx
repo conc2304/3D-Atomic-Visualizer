@@ -48,13 +48,14 @@ export const Scene = () => {
     const indexPlus2 = (activeElementIndex + 2) % listSize;
 
     const elements = [
+      periodicTableElements[indexMinus2],
+      periodicTableElements[indexMinus1],
       periodicTableElements[activeElementIndex],
       periodicTableElements[indexPlus1],
       periodicTableElements[indexPlus2],
-      periodicTableElements[indexMinus1],
-      periodicTableElements[indexMinus2],
     ];
 
+    console.log(elements);
     const components = elements.map((element) => {
       if (!element) return <></>;
 
@@ -68,9 +69,14 @@ export const Scene = () => {
           atomicNumber={number}
           electronConfig={electronConfig}
           isActive={activeElementIndex === number}
-          onClick={(nextActiveElem) => {
+          onElementSelect={(nextActiveElem: number) => {
             console.log("SCENE Click", nextActiveElem);
+            setActiveElementIndex(nextActiveElem);
           }}
+          // onClick={(nextActiveElem: number) => {
+          //   console.log("SCENE Click", nextActiveElem);
+          //   setActiveElementIndex(nextActiveElem);
+          // }}
         />
       );
     });

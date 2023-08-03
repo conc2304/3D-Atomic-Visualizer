@@ -19,9 +19,15 @@ const NucleusComponent = (props: NucleusProps) => {
         <mesh
           key={`${i % 2 === 0 ? "proton" : "neutron"}-${i}`}
           position={[
-            MathUtils.randFloat(-nucleusDensity, nucleusDensity),
-            MathUtils.randFloat(-nucleusDensity, nucleusDensity),
-            MathUtils.randFloat(-nucleusDensity, nucleusDensity),
+            size === 1
+              ? 0
+              : MathUtils.randFloat(-nucleusDensity, nucleusDensity),
+            size === 1
+              ? 0
+              : MathUtils.randFloat(-nucleusDensity, nucleusDensity),
+            size === 1
+              ? 0
+              : MathUtils.randFloat(-nucleusDensity, nucleusDensity),
           ]}
         >
           <sphereGeometry args={[nucleusRadius, 32, 32]} />
