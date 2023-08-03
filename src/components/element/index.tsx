@@ -57,9 +57,9 @@ type ElementTagProps = MeshProps & {
   hoverColor?: Property.Color;
   tagBackground?: Property.Color;
   textColor?: Property.Color;
-  onClick?: (elemId: number) => void;
   onElementSelect?: (elemId: number) => void;
   onVisualizerActiveChange?: (isActive: boolean) => void;
+  onInfoClick?: () => void;
   hide?: false;
   rotationY?: number;
 };
@@ -73,19 +73,18 @@ export const ElementTag = (props: ElementTagProps) => {
     hoverColor,
     tagBackground = "orange",
     textColor = "white",
-    // color = "white",
     position = [0, 0, 0],
     isActive = false,
-    onClick,
     onElementSelect,
+    onInfoClick,
     onVisualizerActiveChange,
-    rotation = [0, 0, 0],
     rotationY = 0,
     hide = false,
   } = props;
 
   const [hovered, setHover] = useState(false);
   const [visualizerActive, setVisualizerActive] = useState(false);
+  const [infoIconHovered, setInfoIconHovered] = useState(false);
   const [visualizerHovered, setVisualizerHover] = useState(false);
   const colorHex = new ColorTranslator(tagBackground).HEX;
 
@@ -95,6 +94,7 @@ export const ElementTag = (props: ElementTagProps) => {
 
   const springs = useSpring({
     scale: visualizerActive || hide ? 0 : isActive ? 1 : 0.5,
+    infoIconScale: infoIconHovered ? 1.4 : 1,
     rotationY: rotationY,
     visualizerAngle: degToRad(90),
     visualizerScale: visualizerHovered ? 1.5 : 1,
@@ -113,19 +113,19 @@ export const ElementTag = (props: ElementTagProps) => {
   };
 
   const handlePointerOver = () => {
-    document.body.style.cursor = "pointer";
+    setCursorActive(true);
     setHover(true);
   };
 
   const handlePointerOut = () => {
-    document.body.style.cursor = "default";
+    setCursorActive(false);
     setHover(false);
   };
 
   const handleClick = () => {
     console.log(visualizerActive);
     if (!visualizerActive) {
-      onClick && onClick(Number(atomicNumber));
+      onElementSelect && onElementSelect(Number(atomicNumber));
     }
 
     if (isActive) {
@@ -134,12 +134,17 @@ export const ElementTag = (props: ElementTagProps) => {
     }
   };
 
+  const setCursorActive = (isActive: boolean) => {
+    const cursor = isActive ? "pointer" : "default";
+    document.body.style.cursor = cursor;
+  };
+
   useEffect(() => {
     if (!isActive) {
       setVisualizerActive(false);
       onVisualizerActiveChange && onVisualizerActiveChange(false);
     }
-  }, [isActive]);
+  }, [isActive, onVisualizerActiveChange]);
 
   const symbolPosMap = {
     1: 1.6,
@@ -151,7 +156,6 @@ export const ElementTag = (props: ElementTagProps) => {
     <>
       <animated.group
         position={position}
-        // rotation={[0, 0, 0]}
         rotation-y={springs.rotationY}
         rotation-x={isActive ? degToRad(-15) : 0}
         scale={springs.scale}
@@ -172,6 +176,34 @@ export const ElementTag = (props: ElementTagProps) => {
             height={0.15}
             position={[-1.5, 3, -0.7]}
           />
+          <animated.group
+            scale={springs.infoIconScale}
+            onPointerEnter={(e) => {
+              e.stopPropagation();
+              setCursorActive(true);
+              setInfoIconHovered(true);
+            }}
+            onPointerLeave={(e) => {
+              e.stopPropagation();
+              setCursorActive(false);
+              setInfoIconHovered(false);
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              console.log("info");
+              onInfoClick && onInfoClick();
+            }}
+            position={[6, 2.5, -0.5]}
+          >
+            <mesh
+              rotation={[0, degToRad(90), degToRad(90)]}
+              position={[0.5, 0.35, 0]}
+            >
+              <cylinderGeometry args={[0.7, 0.7, 0.1]} />
+              <meshBasicMaterial color={infoIconHovered ? "blue" : "black"} />
+            </mesh>
+            <Text text="?" color={textColor} size={0.7} height={0.15} />
+          </animated.group>
 
           {/* shift this text down for hard coded recentering - centering kinda moves when we rescale  */}
           <group position={[0, -1, 0]}>
@@ -208,12 +240,11 @@ export const ElementTag = (props: ElementTagProps) => {
                 }}
                 onPointerEnter={(e) => {
                   e.stopPropagation();
-                  document.body.style.cursor = "pointer";
-
+                  setCursorActive(true);
                   setVisualizerHover(true);
                 }}
                 onPointerLeave={() => {
-                  document.body.style.cursor = "default";
+                  setCursorActive(false);
                   setVisualizerHover(false);
                 }}
               >

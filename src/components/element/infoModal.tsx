@@ -53,7 +53,8 @@ export const InfoModal = (props: InfoModalProps) => {
           sx={{
             position: "relative",
             zIndex: 10,
-            minWidth: "350px",
+            // minWidth: "350px",
+            width: "40vw",
             color: "cyan",
           }}
         >
@@ -86,7 +87,12 @@ export const InfoModal = (props: InfoModalProps) => {
           </Typography>
           <br />
 
-          <Typography variant="body2" maxWidth={"350px"}>
+          <Typography
+            variant="body2"
+            maxWidth={"350px"}
+            textAlign="center"
+            sx={{ margin: "auto" }}
+          >
             {summary}
           </Typography>
           <Box

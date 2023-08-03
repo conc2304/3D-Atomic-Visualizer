@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ObjectCarousel } from "../carousel";
 import { Canvas } from "@react-three/fiber";
 import { Text } from "../text";
@@ -9,21 +9,10 @@ import { ElementTag } from "../element";
 import { PeriodicTableElement } from "../atom/types";
 import { electronStringToObject } from "../atom/utils";
 import { degToRad } from "three/src/math/MathUtils";
-import {
-  Autocomplete,
-  Dialog,
-  DialogTitle,
-  InputAdornment,
-  List,
-  ListItem,
-  Modal,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Autocomplete, InputAdornment, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import { OrbitControls } from "@react-three/drei";
 import SearchIcon from "@mui/icons-material/Search";
-import { ElementInfoKeys } from "../../constants";
 import { InfoModal } from "../element/infoModal";
 
 export const Scene = (): JSX.Element => {
@@ -31,7 +20,7 @@ export const Scene = (): JSX.Element => {
     PeriodicTableElement[]
   >([]);
   const [activeElementIndex, setActiveElementIndex] = useState(0);
-  const [infoModalOpen, setInfoModalOpen] = useState(true);
+  const [infoModalOpen, setInfoModalOpen] = useState(false);
 
   const getElementData = async () => {
     const response = await fetch(
@@ -73,6 +62,9 @@ export const Scene = (): JSX.Element => {
             // elements are base 1, ie there is no element with an atomic number of 0
             setActiveElementIndex(nextActiveElem - 1);
           }}
+          onInfoClick={() => {
+            setInfoModalOpen(true);
+          }}
         />
       );
     });
@@ -101,7 +93,7 @@ export const Scene = (): JSX.Element => {
           options={periodicTableElements}
           sx={{ width: 300, zIndex: 10 }}
           getOptionLabel={(option) => option.name}
-          onChange={(e, value) => {
+          onChange={(_, value) => {
             // will return null for removing filter
             // on remove, just keep the current filter
             setActiveElementIndex(
@@ -159,8 +151,6 @@ export const Scene = (): JSX.Element => {
 
         <ObjectCarousel
           objects={visibleElements}
-          radius={6}
-          onElementChange={(elId: number) => console.log(elId, "LID")}
           activeIndex={activeElementIndex}
         />
 
