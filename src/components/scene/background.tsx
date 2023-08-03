@@ -1,14 +1,10 @@
 import { darken } from "@mui/material";
-import { ContactShadows, OrbitControls } from "@react-three/drei";
-
 import { useFrame } from "@react-three/fiber";
 import { ColorTranslator } from "colortranslator";
 import { Property } from "csstype";
 import { Depth, LayerMaterial, Noise } from "lamina";
 import { useRef } from "react";
-import * as THREE from "three";
-import { ObjectCarousel } from "./components/carousel";
-import { Cube } from "./components/cube";
+import { BackSide } from "three";
 
 type BackgroudProps = {
   colorA?: Property.Color;
@@ -16,7 +12,8 @@ type BackgroudProps = {
   bkgSpeed?: number;
   bkgNoise?: number;
 };
-const Background = (props: BackgroudProps) => {
+
+export const Background = (props: BackgroudProps) => {
   const {
     colorA = "#21d989",
     colorB = "#348ab3",
@@ -40,7 +37,7 @@ const Background = (props: BackgroudProps) => {
   return (
     <mesh scale={100} ref={meshRef}>
       <sphereGeometry args={[1, 64, 64]} />
-      <LayerMaterial side={THREE.BackSide}>
+      <LayerMaterial side={BackSide}>
         <Depth
           colorA={colorAHex}
           colorB={colorBHex}
@@ -61,27 +58,5 @@ const Background = (props: BackgroudProps) => {
         />
       </LayerMaterial>
     </mesh>
-  );
-};
-
-export const Scene = () => {
-  const objects = [
-    <Cube color="red" />,
-    <Cube color="green" />,
-    <Cube color="blue" />,
-    <Cube color="yellow" />,
-  ];
-  return (
-    <>
-      {/* <OrbitControls /> */}
-
-      <ambientLight intensity={0.1} />
-      <directionalLight position={[0, 20, 20]} intensity={1} />
-
-      <ObjectCarousel objects={objects} />
-
-      <ContactShadows scale={30} opacity={0.32} />
-      <Background />
-    </>
   );
 };

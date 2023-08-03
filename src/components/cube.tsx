@@ -1,12 +1,13 @@
 import { useState, useRef, useMemo, useEffect } from "react";
 import { MeshProps, useThree } from "@react-three/fiber";
-import { Euler, MathUtils, Mesh } from "three";
+import { Euler, MathUtils, Mesh, Vector3 } from "three";
 import { Property } from "csstype";
 import { lighten } from "@mui/material";
 import { ColorTranslator } from "colortranslator";
 import { MeshWobbleMaterial } from "@react-three/drei";
-import { animated, useSpring } from "@react-spring/three";
+import { animated, config, useSpring } from "@react-spring/three";
 import { useDrag } from "@use-gesture/react";
+import { Triplet, useBox } from "@react-three/cannon";
 
 type CubeProps = MeshProps & {
   color?: Property.Color;
@@ -14,6 +15,7 @@ type CubeProps = MeshProps & {
   cubeSize?: number;
   rotationResponsiveness?: number;
   isActive?: boolean;
+  withPhysics?: boolean;
   onClick?: () => void;
 };
 
@@ -35,17 +37,21 @@ export const Cube = (props: CubeProps) => {
     cubeSize = 2,
     isActive = false,
     onClick,
-    position,
+    position = new Vector3(0, 0, 0),
+    withPhysics = false,
   } = props;
 
-  const meshRef = useRef<Mesh>(null);
-  const cubeArgs: CubeArgs = [cubeSize, cubeSize, cubeSize];
+  // const meshRef = useRef<Mesh>(null);
+
+  console.log("INIT POS: ", position);
+
   const { size } = useThree();
+  const e = useMemo(() => new Euler(), []);
   const [hovered, setHover] = useState(false);
   const [rotationActive, setRotationActive] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(false);
   const colorHex = new ColorTranslator(color).HEX;
-
-  const e = useMemo(() => new Euler(), []);
+  const cubeArgs: CubeArgs = [cubeSize, cubeSize, cubeSize];
 
   const hoverHex = hoverColor
     ? new ColorTranslator(hoverColor).HEX
@@ -56,13 +62,16 @@ export const Cube = (props: CubeProps) => {
     color: hovered ? hoverHex : colorHex,
     warpFactor: !isActive ? 1 : 0,
     wardSpeed: !isActive ? 1 : 0,
+    config: config.slow,
   });
 
+  const defaultPosition = [0, 0, 0];
   const initialRotation: Array<string | number | undefined> = [0, 0, 0];
-  const [rSpring, api] = useSpring(
+  const [iSpring, api] = useSpring(
     () => ({
       from: {
         rotation: initialRotation,
+        position: [0, 0, 0],
       },
     }),
     []
@@ -74,6 +83,7 @@ export const Cube = (props: CubeProps) => {
       api.start({
         to: {
           rotation: initialRotation,
+          position: [0, 0, 0],
         },
       });
     }
@@ -94,6 +104,7 @@ export const Cube = (props: CubeProps) => {
       to: {
         rotation: nextRotation,
       },
+      config: config.wobbly,
     });
   });
 
@@ -108,32 +119,50 @@ export const Cube = (props: CubeProps) => {
     setHover(false);
   };
 
-  const handleClick = (evt: any) => {
+  const handleClick = () => {
     onClick && onClick();
-    // if (isActive) {
-    //   setRotationActive(!rotationActive);
-    // }
+  };
+
+  const handleDoubleClick = () => {
+    if (!isActive) return;
+    console.log("DOUBLE");
+    const nextIsZoomed = !isZoomed;
+    const toPos = nextIsZoomed ? [0, 1, 1] : defaultPosition;
+    api.start({
+      to: {
+        position: toPos,
+      },
+    });
+
+    console.log(nextIsZoomed);
+    console.log(toPos, defaultPosition);
+    setIsZoomed(!nextIsZoomed);
   };
 
   return (
-    <animated.mesh
-      {...bind()}
-      ref={meshRef}
-      onPointerOver={handlePointerOver}
-      onPointerOut={handlePointerOut}
-      onClick={handleClick}
-      scale={springs.scale}
-      position={position}
-      // @ts-ignore
-      rotation={rSpring.rotation}
-    >
-      <boxGeometry args={cubeArgs} />
-      {/* @ts-ignore */}
-      <AnimatedMesh
-        color={springs.color}
-        speed={springs.wardSpeed}
-        factor={springs.warpFactor}
-      />
-    </animated.mesh>
+    // @ts-ignore
+    // <mesh ref={boxRef}>
+    <mesh position={iSpring.position}>
+      <animated.mesh
+        {...bind()}
+        onPointerOver={handlePointerOver}
+        onPointerOut={handlePointerOut}
+        onClick={handleClick}
+        onDoubleClick={handleDoubleClick}
+        scale={springs.scale}
+        position={position}
+        // @ts-ignore
+        rotation={iSpring.rotation}
+      >
+        <boxGeometry args={cubeArgs} />
+        {/* @ts-ignore */}
+        <AnimatedMesh
+          color={springs.color}
+          speed={springs.wardSpeed}
+          factor={springs.warpFactor}
+        />
+      </animated.mesh>
+    </mesh>
+    // {/* </mesh> */}
   );
 };

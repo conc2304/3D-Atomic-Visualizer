@@ -77,6 +77,10 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
           })}
         </animated.group>
       </group>
+      {/* <mesh position={[0, -1.75, 0]}>
+        <cylinderGeometry args={[radius + 1.5, radius + 1.5, 0.25]} />
+        <meshLambertMaterial color={"#EEE"} />
+      </mesh> */}
     </>
   );
 };
