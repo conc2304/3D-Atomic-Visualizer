@@ -8,27 +8,36 @@ type ElectronProps = {
   color?: Property.Color;
   orbitSpeed?: number;
   offset?: number;
+  orbitRadius?: number;
+  size?: number;
 };
 
 export const Electron = (props: ElectronProps) => {
-  const { shellIndex, color = "#00FFFF", orbitSpeed = 1, offset = 0 } = props;
+  const {
+    shellIndex,
+    color = "#00FFFF",
+    orbitSpeed = 1,
+    offset = 0,
+    orbitRadius = 1,
+    size = 0.5,
+  } = props;
 
   const ref = useRef<Mesh>(null);
-  const radius = 2 + shellIndex * 2; // Each shell will be 2 units apart
+  const shellRadius = orbitRadius * (2 + shellIndex * 2); // Each shell will be 2 units apart
 
   useFrame(({ clock }) => {
     if (!ref.current) return;
 
     const elapsedTime = clock.getElapsedTime();
-    const positionX = radius * Math.cos(elapsedTime * orbitSpeed + offset); // offset to prevent overlapping paths
-    const positionZ = radius * Math.sin(elapsedTime * orbitSpeed + offset);
+    const positionX = shellRadius * Math.cos(elapsedTime * orbitSpeed + offset); // offset to prevent overlapping paths
+    const positionZ = shellRadius * Math.sin(elapsedTime * orbitSpeed + offset);
 
     ref.current.position.set(positionX, 0, positionZ);
   });
 
   return (
     <mesh ref={ref}>
-      <sphereGeometry args={[0.5, 32, 32]} />
+      <sphereGeometry args={[size, 32, 32]} />
       <meshStandardMaterial color={color} />
     </mesh>
   );

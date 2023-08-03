@@ -27,7 +27,11 @@ export const Scene = () => {
       return;
     }
     const data = await response.json();
-    setPeriodicTableElements(data.elements);
+    const elements: PeriodicTableElement[] = data.elements || [];
+    const sortedElements = elements.sort((elemA, elemB) => {
+      return elemA.number - elemB.number;
+    });
+    setPeriodicTableElements(sortedElements);
   };
   useEffect(() => {
     getElementData();
@@ -35,13 +39,18 @@ export const Scene = () => {
 
   const visibleElements = useMemo<JSX.Element[]>(() => {
     if (!periodicTableElements) return [];
-
     const listSize = periodicTableElements.length;
+
+    // Calculate indices with modulo to handle looping
+    const indexMinus1 = (activeElementIndex - 1 + listSize) % listSize;
+    const indexPlus1 = (activeElementIndex + 1) % listSize;
+    const indexPlus2 = (activeElementIndex + 2) % listSize;
+
     const elements = [
       periodicTableElements[activeElementIndex],
-      periodicTableElements[(activeElementIndex + 1) % listSize],
-      periodicTableElements[(activeElementIndex + 2) % listSize],
-      periodicTableElements[(activeElementIndex + 3) % listSize],
+      periodicTableElements[indexPlus1],
+      periodicTableElements[indexPlus2],
+      periodicTableElements[indexMinus1],
     ];
 
     const components = elements.map((element) => {
@@ -57,9 +66,8 @@ export const Scene = () => {
           atomicNumber={number}
           electronConfig={electronConfig}
           isActive={activeElementIndex === number}
-          onClick={() => {
-            console.log("SCENE Click");
-            setActiveElementIndex(number);
+          onClick={(nextActiveElem) => {
+            console.log("SCENE Click", nextActiveElem);
           }}
         />
       );
@@ -87,14 +95,12 @@ export const Scene = () => {
         penumbra={1}
       />
       <Text text="Atomic Visualizer" color="red" position={[-10, 7, -2]} />
-      {/* <Atom
-        electronConfig={{
-          1: { s: 2 },
-          2: { s: 2, p: 6 },
-        }}
-      /> */}
 
-      <ObjectCarousel objects={visibleElements} radius={6} />
+      <ObjectCarousel
+        objects={visibleElements}
+        radius={6}
+        onElementChange={(elId: number) => console.log(elId, "LID")}
+      />
 
       <Floor position={new Vector3(0, -2.25, 0)} radius={12} thickness={0.2} />
       <Background />

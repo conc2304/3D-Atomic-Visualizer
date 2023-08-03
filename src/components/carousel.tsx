@@ -8,10 +8,11 @@ import { Text } from "./text";
 type ObjectCarouselProps = {
   objects: JSX.Element[];
   radius?: number;
+  onElementChange?: (elementId: number) => void;
 };
 
 export const ObjectCarousel = (props: ObjectCarouselProps) => {
-  const { objects, radius = 5 } = props;
+  const { objects, onElementChange, radius = 5 } = props;
   const offset = degToRad(180 / objects.length) + degToRad(360); // put the first item in the front
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -35,7 +36,7 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
     return new Vector3(Math.sin(theta) * radius, 0, Math.cos(theta) * radius);
   };
 
-  const handleOnItemClick = (nextActiveIndex: number) => {
+  const handleOnItemClick = (nextActiveIndex: number, elementId: number) => {
     let delta: number;
     //  check for index wrap around and only increment by one in either direction
     if (activeIndex === 0 && nextActiveIndex === objects.length - 1) {
@@ -63,6 +64,8 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
       },
     });
     setActiveIndex(nextActiveIndex);
+
+    onElementChange && onElementChange(elementId);
   };
 
   return (
@@ -71,29 +74,15 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
         <animated.group rotation-y={springs.carouselRotation}>
           {objects.map((MeshObject, i) => {
             const isActiveIndex = i === activeIndex;
-            console.log("map", i);
-
-            console.log(currRotation.current);
-
-            // return (
-            //   <animated.group
-            //     key={`carouselItem-${i}-group`}
-            //     rotation-y={springs.itemRotation}
-            //   >
-            //     <Text text="TESTING" />
-            //     {cloneElement(MeshObject, {
-            //       position: getItemPosition(i),
-            //       key: `carouselItem-${i}`,
-            //       onClick: () => handleOnItemClick(i),
-            //       isActive: isActiveIndex,
-            //     })}
-            //   </animated.group>
-            // );
             return cloneElement(MeshObject, {
               position: getItemPosition(i),
               rotationY: currRotation.current,
               key: `carouselItem-${i}`,
-              onClick: () => handleOnItemClick(i),
+              onClick: (elementId: number): void => {
+                console.log("cloner", elementId, MeshObject.props.name);
+                handleOnItemClick(i, elementId);
+                MeshObject.props.onClick(elementId);
+              },
               isActive: isActiveIndex,
             });
           })}

@@ -18,7 +18,8 @@ import { useEffect, useRef, useState } from "react";
 import { ElectronConfiguration } from "../atom/types";
 import { ColorTranslator } from "colortranslator";
 import { lighten } from "@mui/material";
-import { hover } from "@testing-library/user-event/dist/hover";
+import { Atom } from "../atom/atom";
+import { degToRad } from "three/src/math/MathUtils";
 
 type ElementBackDropProps = {
   isHovered: boolean;
@@ -56,7 +57,7 @@ type ElementTagProps = MeshProps & {
   hoverColor?: Property.Color;
   tagBackground?: Property.Color;
   textColor?: Property.Color;
-  onClick?: () => void;
+  onClick?: (elemId: number) => void;
   rotationY?: number;
 };
 
@@ -78,7 +79,8 @@ export const ElementTag = (props: ElementTagProps) => {
   } = props;
 
   const [hovered, setHover] = useState(false);
-
+  const [visualizerActive, setVisualizerActive] = useState(false);
+  const [visualizerHovered, setVisualizerHover] = useState(false);
   const colorHex = new ColorTranslator(tagBackground).HEX;
 
   const hoverHex = hoverColor
@@ -86,8 +88,10 @@ export const ElementTag = (props: ElementTagProps) => {
     : lighten(colorHex, 0.7);
 
   const springs = useSpring({
-    scale: isActive ? 1 : 0.5,
+    scale: visualizerActive ? 0 : isActive ? 1 : 0.5,
     rotationY: rotationY,
+    visualizerAngle: degToRad(90),
+    visualizerScale: visualizerHovered ? 1.5 : 1,
     config: config.slow,
   });
 
@@ -111,46 +115,115 @@ export const ElementTag = (props: ElementTagProps) => {
   };
 
   const handleClick = () => {
-    onClick && onClick();
+    console.log(visualizerActive);
+    if (!visualizerActive) {
+      onClick && onClick(Number(atomicNumber));
+    }
+
+    if (isActive) {
+      setVisualizerActive(true);
+    }
+  };
+
+  useEffect(() => {
+    if (!isActive) {
+      setVisualizerActive(false);
+    }
+  }, [isActive]);
+
+  const symbolPosMap = {
+    1: 1.6,
+    2: 0.5,
+    3: -0.5,
   };
 
   return (
-    <animated.group
-      position={position}
-      rotation={[0, 0, 0]}
-      rotation-y={springs.rotationY}
-      scale={springs.scale}
-      onPointerOver={handlePointerOver}
-      onPointerOut={handlePointerOut}
-      onClick={handleClick}
-    >
-      <ElementBackDrop
-        color={colorHex}
-        hoverColor={hoverHex}
-        isHovered={hovered}
-      />
-      <group position={[-2.7, 0, 1.1]}>
-        <Text
-          text={symbol}
-          color={textColor}
-          size={1.5}
-          height={1}
-          position={[symbol.length === 2 ? 0.5 : 1.6, 1.5, 0]}
+    <>
+      <animated.group
+        position={position}
+        rotation={[0, 0, 0]}
+        rotation-y={springs.rotationY}
+        scale={springs.scale}
+        onPointerOver={handlePointerOver}
+        onPointerOut={handlePointerOut}
+        onClick={handleClick}
+      >
+        <ElementBackDrop
+          color={colorHex}
+          hoverColor={hoverHex}
+          isHovered={hovered}
         />
-        <Text
-          text={atomicNumber.toString()}
-          color={textColor}
-          size={0.5}
-          height={0.5}
-          position={[-1.5, 3.5, 0]}
-        />
-        <Text
-          text={name}
-          size={0.5}
-          height={0.1}
-          position={[getXPosition(name), -0.5, 0]}
-        />
-      </group>
-    </animated.group>
+        <group position={[-2.7, 0, 1.1]}>
+          <Text
+            text={symbol}
+            color={textColor}
+            size={1.5}
+            height={1}
+            position={[symbolPosMap[symbol.length as 1 | 2 | 3] || 0.5, 1.5, 0]}
+          />
+          <Text
+            text={atomicNumber.toString()}
+            color={textColor}
+            size={0.5}
+            height={0.15}
+            position={[-1.5, 3.5, 0]}
+          />
+          <Text
+            text={name}
+            size={0.5}
+            height={0.1}
+            position={[getXPosition(name), -0.5, 0]}
+          />
+          <animated.group
+            // scale={1}
+            rotation={[0, 0, 0]}
+            // rotation-x={0}
+            scale={springs.visualizerScale}
+            position={[2.5, -1.25, 2]}
+          >
+            {isActive && (
+              <mesh
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setVisualizerActive(true);
+                }}
+                onPointerEnter={(e) => {
+                  e.stopPropagation();
+                  setVisualizerHover(true);
+                }}
+                onPointerLeave={() => {
+                  setVisualizerHover(false);
+                }}
+              >
+                <Atom
+                  electronConfig={{ 1: { s: 2 } }}
+                  color="lightblue"
+                  orbitRadius={0.2}
+                  electronSize={0.2}
+                />
+              </mesh>
+            )}
+          </animated.group>
+        </group>
+      </animated.group>
+      {visualizerActive && (
+        <animated.mesh
+          scale={springs.visualizerScale}
+          onClick={(e) => {
+            e.stopPropagation();
+            setVisualizerActive(false);
+          }}
+          onPointerEnter={(e) => {
+            e.stopPropagation();
+            setVisualizerHover(true);
+          }}
+          onPointerLeave={() => {
+            setVisualizerHover(false);
+          }}
+        >
+          <Atom electronConfig={electronConfig} size={Number(atomicNumber)} />
+        </animated.mesh>
+      )}
+    </>
   );
 };

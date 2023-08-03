@@ -8,19 +8,28 @@ import { degToRad } from "three/src/math/MathUtils";
 type AtomProps = {
   color?: Property.Color;
   electronConfig: ElectronConfiguration;
+  size?: number;
+  orbitRadius?: number;
+  electronSize?: number;
+  nucleusSize?: number;
 };
 export const Atom = (props: AtomProps) => {
-  const { color = "red", electronConfig } = props;
+  const {
+    color = "red",
+    electronConfig,
+    size = 1,
+    orbitRadius = 1,
+    electronSize = 0.4,
+    nucleusSize = 0.5,
+  } = props;
 
   return (
     <group>
-      <Nucleus />
+      <Nucleus size={size} nucleusRadius={nucleusSize} />
       {Object.keys(electronConfig).map((shellIndex) => {
         const shellI = Number(shellIndex);
         const electronShell = electronConfig[shellI];
         const electronCloud: (Mesh | JSX.Element)[] = [];
-
-        console.log(electronShell);
 
         // visualize in the Bohr style
         const totalElectrons = Object.values(electronShell).reduce(
@@ -35,35 +44,15 @@ export const Atom = (props: AtomProps) => {
           const offset = degToRad(360 / totalElectrons) * i;
           electronCloud.push(
             <Electron
+              key={`electron-${i * shellI}`}
               shellIndex={shellI}
               offset={offset}
               orbitSpeed={shellSpeed}
+              orbitRadius={orbitRadius}
+              size={electronSize}
             />
           );
         }
-
-        // if (electronShell.s) {
-        //   for (let i = 0; i < electronShell.s; i++) {
-        //     electronCloud.push(
-        //       <SOrbitalElectron
-        //         key={`s-orbital-${shellI}-${i}`}
-        //         shellIndex={shellI}
-        //       />
-        //     );
-        //   }
-        // }
-
-        // if (electronShell.p) {
-        //   for (let i = 0; i < electronShell.p; i++) {
-        //     electronCloud.push(
-        //       <POrbitalElectron
-        //         key={`p-orbital-${shellI}-${i}`}
-        //         shellIndex={shellI}
-        //         hemisphere={i % 2 === 0 ? "left" : "right"}
-        //       />
-        //     );
-        //   }
-        // }
 
         return electronCloud;
       })}
