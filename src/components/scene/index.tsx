@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ObjectCarousel } from "../carousel";
 import { Canvas } from "@react-three/fiber";
-import { Text } from "../text";
+import { Text } from "../ui/text";
 import { Floor } from "./floor";
 import { Vector3 } from "three";
 import { Background } from "./background";
@@ -9,11 +9,10 @@ import { ElementTag } from "../element";
 import { PeriodicTableElement } from "../atom/types";
 import { electronStringToObject } from "../atom/utils";
 import { degToRad } from "three/src/math/MathUtils";
-import { Autocomplete, InputAdornment, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import { OrbitControls } from "@react-three/drei";
-import SearchIcon from "@mui/icons-material/Search";
 import { InfoModal } from "../element/infoModal";
+import { Search } from "../ui/search";
 
 export const Scene = (): JSX.Element => {
   const [periodicTableElements, setPeriodicTableElements] = useState<
@@ -78,45 +77,10 @@ export const Scene = (): JSX.Element => {
         position={"absolute"}
         sx={{ zIndex: 100, bottom: 10, right: 10 }}
       >
-        <Box
-          component="div"
-          sx={{
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            backgroundColor: "#FFFFFFAA",
-            filter: "blur(4px)",
-            zIndex: 0,
-          }}
-        ></Box>
-        <Autocomplete
+        <Search
           options={periodicTableElements}
-          sx={{ width: 300, zIndex: 10 }}
-          getOptionLabel={(option) => option.name}
-          onChange={(_, value) => {
-            // will return null for removing filter
-            // on remove, just keep the current filter
-            setActiveElementIndex(
-              value ? value?.number - 1 : activeElementIndex
-            );
-          }}
-          renderInput={(props) => {
-            const { InputProps, ...restProps } = props;
-            return (
-              <TextField
-                variant="outlined"
-                InputProps={{
-                  ...InputProps,
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon htmlColor="#000" />
-                    </InputAdornment>
-                  ),
-                }}
-                {...restProps}
-                label="Search for Element"
-              />
-            );
+          onSearchChange={(value) => {
+            setActiveElementIndex(value ? value : activeElementIndex);
           }}
         />
       </Box>
@@ -142,7 +106,7 @@ export const Scene = (): JSX.Element => {
         <spotLight
           castShadow
           intensity={1}
-          args={["blue", 1, 100]}
+          args={["white", 1, 100]}
           position={[-1, 4, -1]}
           penumbra={1}
         />

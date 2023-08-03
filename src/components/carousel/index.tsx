@@ -27,7 +27,7 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
               i > activeIndex + visibleItemRange ||
               i < activeIndex - visibleItemRange
             )
-              return <></>;
+              return null;
 
             return (
               <animated.group

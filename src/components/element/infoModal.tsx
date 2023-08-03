@@ -27,7 +27,6 @@ export const InfoModal = (props: InfoModalProps) => {
     name,
     symbol,
     number,
-    // category,
     discovered_by,
     named_by,
     appearance,
@@ -53,7 +52,6 @@ export const InfoModal = (props: InfoModalProps) => {
           sx={{
             position: "relative",
             zIndex: 10,
-            // minWidth: "350px",
             width: "40vw",
             color: "cyan",
           }}
@@ -101,10 +99,10 @@ export const InfoModal = (props: InfoModalProps) => {
           >
             <List sx={{ pt: 0 }}>
               {Object.entries({ ...rest }).map(([key, value]) => {
-                if (!ElementInfoKeys.includes(key)) return <></>;
+                if (!ElementInfoKeys.includes(key)) return null;
 
                 return (
-                  <ListItem>
+                  <ListItem key={key}>
                     <Box
                       component={"div"}
                       sx={{
@@ -136,7 +134,6 @@ export const InfoModal = (props: InfoModalProps) => {
             left: 0,
             right: 0,
             backgroundColor: "#000000AA",
-            // filter: "blur(10px)",
             zIndex: 0,
           }}
         />

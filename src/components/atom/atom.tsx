@@ -6,7 +6,8 @@ import { ElectronConfiguration } from "./types";
 import { degToRad } from "three/src/math/MathUtils";
 
 type AtomProps = {
-  color?: Property.Color;
+  electronColor?: Property.Color;
+  atomColor?: Property.Color;
   electronConfig: ElectronConfiguration;
   size?: number;
   orbitRadius?: number;
@@ -15,7 +16,8 @@ type AtomProps = {
 };
 export const Atom = (props: AtomProps) => {
   const {
-    color = "red",
+    electronColor = "#00FFFF",
+    atomColor = "red",
     electronConfig,
     size = 1,
     orbitRadius = 1,
@@ -25,7 +27,7 @@ export const Atom = (props: AtomProps) => {
 
   return (
     <group>
-      <Nucleus size={size} nucleusRadius={nucleusSize} />
+      <Nucleus size={size} nucleusRadius={nucleusSize} color={atomColor} />
       {Object.keys(electronConfig).map((shellIndex) => {
         const shellI = Number(shellIndex);
         const electronShell = electronConfig[shellI];
@@ -50,6 +52,7 @@ export const Atom = (props: AtomProps) => {
               orbitSpeed={shellSpeed}
               orbitRadius={orbitRadius}
               size={electronSize}
+              color={electronColor}
             />
           );
         }

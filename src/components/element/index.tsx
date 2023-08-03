@@ -1,19 +1,9 @@
 import { MeshProps } from "@react-three/fiber";
 import { Property } from "csstype";
-import {
-  BoxGeometry,
-  EdgesGeometry,
-  LineSegments,
-  LineBasicMaterial,
-  Vector3,
-  PlaneGeometry,
-  Mesh,
-  MeshStandardMaterial,
-} from "three";
-import { animated, config, ElementType, useSpring } from "@react-spring/three";
-
-import { Box, MeshWobbleMaterial, RoundedBox } from "@react-three/drei";
-import { Text } from "../text";
+import { Vector3, Mesh } from "three";
+import { animated, config, useSpring } from "@react-spring/three";
+import { RoundedBox } from "@react-three/drei";
+import { Text } from "../ui/text";
 import { useEffect, useRef, useState } from "react";
 import { ElectronConfiguration } from "../atom/types";
 import { ColorTranslator } from "colortranslator";
@@ -123,7 +113,6 @@ export const ElementTag = (props: ElementTagProps) => {
   };
 
   const handleClick = () => {
-    console.log(visualizerActive);
     if (!visualizerActive) {
       onElementSelect && onElementSelect(Number(atomicNumber));
     }
@@ -190,7 +179,6 @@ export const ElementTag = (props: ElementTagProps) => {
             }}
             onClick={(e) => {
               e.stopPropagation();
-              console.log("info");
               onInfoClick && onInfoClick();
             }}
             position={[6, 2.5, -0.5]}
@@ -250,7 +238,8 @@ export const ElementTag = (props: ElementTagProps) => {
               >
                 <Atom
                   electronConfig={{ 1: { s: 2 } }}
-                  color="lightblue"
+                  electronColor="lightblue"
+                  atomColor="red"
                   orbitRadius={0.2}
                   electronSize={0.2}
                 />

@@ -11,13 +11,13 @@ type NucleusProps = {
 const NucleusComponent = (props: NucleusProps) => {
   const { color = "red", size = 1, nucleusRadius = 0.1 } = props;
   const nucleusDensity = 0.6;
-  console.log("render");
 
   return (
     <group position={[0, 0, 0]}>
       {Array.from({ length: size }).map((_, i) => (
         <mesh
           key={`${i % 2 === 0 ? "proton" : "neutron"}-${i}`}
+          // we are randomizing the x,y,z positions of the protons and neutrons in the nucleus to simulate their clustering and bonding
           position={[
             size === 1
               ? 0
@@ -31,6 +31,7 @@ const NucleusComponent = (props: NucleusProps) => {
           ]}
         >
           <sphereGeometry args={[nucleusRadius, 32, 32]} />
+          {/* every other item is either a "proton" or a "neutron" so simulate with color*/}
           <meshStandardMaterial color={i % 2 === 0 ? color : "white"} />
         </mesh>
       ))}

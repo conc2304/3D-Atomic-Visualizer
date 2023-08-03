@@ -1,4 +1,4 @@
-import Arkitech_Bold from "../assets/Arkitech_Bold.json";
+import Arkitech_Bold from "../../assets/Arkitech_Bold.json";
 
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
