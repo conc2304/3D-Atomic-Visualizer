@@ -1,5 +1,5 @@
 import { animated } from "@react-spring/three";
-import { cloneElement, useRef, useState } from "react";
+import { cloneElement } from "react";
 import { degToRad } from "three/src/math/MathUtils";
 
 type ObjectCarouselProps = {
