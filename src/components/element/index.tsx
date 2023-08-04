@@ -85,7 +85,7 @@ export const ElementTag = (props: ElementTagProps) => {
   const springs = useSpring({
     // if visualiser is active or hide is set then 0, otherwise if its active its 1 else 0.5
     scale: visualizerActive || hide ? 0 : isActive ? 1 : 0.5,
-    infoIconScale: infoIconHovered ? 1.4 : 1,
+    infoIconScale: infoIconHovered ? 1.25 : 1,
     rotationY: rotationY,
     visualizerAngle: degToRad(90),
     visualizerScale: visualizerHovered ? 1.5 : 1,
@@ -170,6 +170,7 @@ export const ElementTag = (props: ElementTagProps) => {
             scale={springs.infoIconScale}
             onPointerEnter={(e) => {
               e.stopPropagation();
+              if (!isActive) return;
               setCursorActive(true);
               setInfoIconHovered(true);
             }}
@@ -180,6 +181,7 @@ export const ElementTag = (props: ElementTagProps) => {
             }}
             onClick={(e) => {
               e.stopPropagation();
+              if (!isActive) return;
               onInfoClick && onInfoClick();
             }}
             position={[6, 2.5, -0.5]}
