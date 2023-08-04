@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/3d-atomic-visualizer/static/css/main.4ebcf999.css",
-    "main.js": "/3d-atomic-visualizer/static/js/main.ef031b9d.js",
-    "static/js/787.dcdd7d3f.chunk.js": "/3d-atomic-visualizer/static/js/787.dcdd7d3f.chunk.js",
-    "index.html": "/3d-atomic-visualizer/index.html",
-    "main.4ebcf999.css.map": "/3d-atomic-visualizer/static/css/main.4ebcf999.css.map",
-    "main.ef031b9d.js.map": "/3d-atomic-visualizer/static/js/main.ef031b9d.js.map",
-    "787.dcdd7d3f.chunk.js.map": "/3d-atomic-visualizer/static/js/787.dcdd7d3f.chunk.js.map"
+    "main.css": "/3D-Atomic-Visualizer/static/css/main.4ebcf999.css",
+    "main.js": "/3D-Atomic-Visualizer/static/js/main.bb427e69.js",
+    "static/js/787.dcdd7d3f.chunk.js": "/3D-Atomic-Visualizer/static/js/787.dcdd7d3f.chunk.js",
+    "index.html": "/3D-Atomic-Visualizer/index.html",
+    "main.4ebcf999.css.map": "/3D-Atomic-Visualizer/static/css/main.4ebcf999.css.map",
+    "main.bb427e69.js.map": "/3D-Atomic-Visualizer/static/js/main.bb427e69.js.map",
+    "787.dcdd7d3f.chunk.js.map": "/3D-Atomic-Visualizer/static/js/787.dcdd7d3f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.4ebcf999.css",
-    "static/js/main.ef031b9d.js"
+    "static/js/main.bb427e69.js"
   ]
 }
