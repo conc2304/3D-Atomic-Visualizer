@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/3D-Atomic-Visualizer/static/css/main.4ebcf999.css",
-    "main.js": "/3D-Atomic-Visualizer/static/js/main.bb427e69.js",
+    "main.js": "/3D-Atomic-Visualizer/static/js/main.3e3ad72d.js",
     "static/js/787.dcdd7d3f.chunk.js": "/3D-Atomic-Visualizer/static/js/787.dcdd7d3f.chunk.js",
     "index.html": "/3D-Atomic-Visualizer/index.html",
     "main.4ebcf999.css.map": "/3D-Atomic-Visualizer/static/css/main.4ebcf999.css.map",
-    "main.bb427e69.js.map": "/3D-Atomic-Visualizer/static/js/main.bb427e69.js.map",
+    "main.3e3ad72d.js.map": "/3D-Atomic-Visualizer/static/js/main.3e3ad72d.js.map",
     "787.dcdd7d3f.chunk.js.map": "/3D-Atomic-Visualizer/static/js/787.dcdd7d3f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.4ebcf999.css",
-    "static/js/main.bb427e69.js"
+    "static/js/main.3e3ad72d.js"
   ]
 }
