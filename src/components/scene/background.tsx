@@ -6,6 +6,7 @@ import { Depth, LayerMaterial, Noise } from "lamina";
 import { useRef } from "react";
 import { BackSide } from "three";
 
+//  you get the picture this is a typedef and then that is the component
 type BackgroudProps = {
   colorA?: Property.Color;
   colorB?: Property.Color;
@@ -25,6 +26,7 @@ export const Background = (props: BackgroudProps) => {
   const colorAHex = new ColorTranslator(colorA).HEX;
   const colorBHex = new ColorTranslator(colorB).HEX;
 
+  // animate all of the background rotation using the change in time from useFrame
   useFrame((_, delta) => {
     if (meshRef.current) {
       meshRef.current.rotation.x =
@@ -34,6 +36,7 @@ export const Background = (props: BackgroudProps) => {
     }
   });
 
+  // a backdrop gradient with a little noise for texture
   return (
     <mesh scale={100} ref={meshRef}>
       <sphereGeometry args={[1, 64, 64]} />

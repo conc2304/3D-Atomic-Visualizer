@@ -11,12 +11,14 @@ import {
 import { ElementInfoKeys } from "../../constants";
 import { PeriodicTableElement } from "../../types";
 
+// type definition for Info Modal Props
 type InfoModalProps = {
   onClose?: () => void;
   open: boolean;
   data: PeriodicTableElement;
 };
 
+// Info Modal Component
 export const InfoModal = (props: InfoModalProps) => {
   const { onClose, open, data } = props;
 
@@ -31,7 +33,7 @@ export const InfoModal = (props: InfoModalProps) => {
     named_by,
     appearance,
     summary,
-    ...rest
+    ...rest // any props not named are stored in rest
   } = data;
 
   return (
@@ -40,7 +42,8 @@ export const InfoModal = (props: InfoModalProps) => {
       open={open}
       sx={{
         "& .MuiPaper-root": {
-          backgroundColor: "transparent",
+          backgroundColor: "#000000BB",
+
           borderRadius: "16px",
           border: "2px solid cyan",
         },
@@ -61,34 +64,42 @@ export const InfoModal = (props: InfoModalProps) => {
               component={"div"}
               sx={{
                 display: "flex",
-                justifyContent: "space-around",
+                justifyContent: "center",
                 alignItems: "baseline",
               }}
             >
-              <Typography variant="h2">
+              <Typography
+                variant="h3"
+                sx={{ position: "absolute", top: -5, right: 0 }}
+              >
+                <strong>{number}</strong>
+              </Typography>
+              <Typography variant="h2" mr={3}>
                 <strong>{symbol}</strong>
               </Typography>
               <Typography variant="h4">{name}</Typography>
             </Box>
           </DialogTitle>
           <Typography variant="body2" maxWidth={"350px"}>
-            <strong>Named by:</strong> {named_by}
+            <strong>Named by:</strong> {named_by || "N/A"}
           </Typography>
           <Typography variant="body2" maxWidth={"350px"}>
-            <strong>Discovered by:</strong> {discovered_by}
+            <strong>Discovered by:</strong> {discovered_by || "N/A"}
           </Typography>
           <br />
 
-          <Typography variant="body1" maxWidth={"350px"}>
-            <strong>Appearance: </strong>
-            {appearance}
-          </Typography>
+          {appearance && (
+            <Typography variant="body1" maxWidth={"350px"}>
+              <strong>Appearance: </strong>
+              {appearance}
+            </Typography>
+          )}
           <br />
 
           <Typography
             variant="body2"
             maxWidth={"350px"}
-            textAlign="center"
+            textAlign="justify"
             sx={{ margin: "auto" }}
           >
             {summary}
@@ -98,7 +109,9 @@ export const InfoModal = (props: InfoModalProps) => {
             sx={{ maxHeight: "450px", overflowY: "sroll" }}
           >
             <List sx={{ pt: 0 }}>
-              {Object.entries({ ...rest }).map(([key, value]) => {
+              {/* iterate over all of the "rest" of the key value pairs and render them as list items  */}
+              {Object.entries(rest).map(([key, value]) => {
+                // only render the items we want, and dont render if we dont have data to render
                 if (!ElementInfoKeys.includes(key) || !key || !value)
                   return null;
 
@@ -126,18 +139,6 @@ export const InfoModal = (props: InfoModalProps) => {
             </List>
           </Box>
         </Box>
-        <Box
-          component={"div"}
-          sx={{
-            position: "absolute",
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: "#000000AA",
-            zIndex: 0,
-          }}
-        />
       </DialogContent>
     </Dialog>
   );

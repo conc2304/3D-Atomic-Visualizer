@@ -10,6 +10,7 @@ export const electronStringToObject = (
   // matches are done in regex groups of each ()
   const matches = config.match(/(\d+)([spdfgh])(\d+)/g);
 
+  // fail out if no matches and return empty object
   if (!matches) return electronConfig;
 
   for (const match of matches) {
@@ -18,6 +19,7 @@ export const electronStringToObject = (
     const orbitalType = match[1] as OrbitalType;
     const electronCount = Number(match.slice(2));
 
+    // add matches to object, create place if no place exists
     if (!electronConfig[shellIndex]) {
       electronConfig[shellIndex] = {};
     }

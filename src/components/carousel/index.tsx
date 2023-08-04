@@ -22,16 +22,18 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
     <>
       <group rotation-y={-Math.PI / objects.length} position-y={-0.01}>
         <animated.group rotation-y={0}>
+          {/* iterate over all of the objects and render them if we so desire */}
           {objects.map((MeshObject, i) => {
             const isActiveIndex = i === activeIndex;
 
-            // only show +- the visible item range
+            // only show + or - the visible item range
             if (
               i > activeIndex + visibleItemRange ||
               i < activeIndex - visibleItemRange
             )
               return null;
 
+            // return the group with the objects passed in from parent
             return (
               <animated.group
                 key={`anim-g-${i}`}
@@ -47,7 +49,6 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
                   ...MeshObject.props,
                   hide: visualizerActive && !isActiveIndex,
                   key: `carouselItem-${i}`,
-
                   isActive: isActiveIndex,
                 })}
               </animated.group>

@@ -12,8 +12,11 @@ const NucleusComponent = (props: NucleusProps) => {
   const { color = "red", size = 1, nucleusRadius = 0.1 } = props;
   const nucleusDensity = 0.6;
 
+  const sphereCrossSections = 32;
+
   return (
     <group position={[0, 0, 0]}>
+      {/* render a sphere per atomic number (size) */}
       {Array.from({ length: size }).map((_, i) => (
         <mesh
           key={`${i % 2 === 0 ? "proton" : "neutron"}-${i}`}
@@ -30,7 +33,9 @@ const NucleusComponent = (props: NucleusProps) => {
               : MathUtils.randFloat(-nucleusDensity, nucleusDensity),
           ]}
         >
-          <sphereGeometry args={[nucleusRadius, 32, 32]} />
+          <sphereGeometry
+            args={[nucleusRadius, sphereCrossSections, sphereCrossSections]}
+          />
           {/* every other item is either a "proton" or a "neutron" so simulate with color*/}
           <meshStandardMaterial color={i % 2 === 0 ? color : "white"} />
         </mesh>

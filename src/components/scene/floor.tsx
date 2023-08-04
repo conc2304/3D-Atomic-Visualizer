@@ -2,12 +2,15 @@ import { MeshReflectorMaterial } from "@react-three/drei";
 import { MeshReflectorMaterialProps } from "@react-three/drei/materials/MeshReflectorMaterial";
 import { Vector3 } from "three";
 
+// this is floor, meet floor
+
 type FloorProps = {
   radius: number;
   thickness: number;
   position: Vector3;
   reflectorMaterialProps?: MeshReflectorMaterialProps;
 };
+
 export const Floor = (props: FloorProps) => {
   const { radius, thickness, position, reflectorMaterialProps } = props;
 

@@ -5,7 +5,7 @@ import { Text } from "../ui/text";
 import { Floor } from "./floor";
 import { Vector3 } from "three";
 import { Background } from "./background";
-import { ElementTag } from "../element";
+import { ElementTile } from "../element";
 import { PeriodicTableElement } from "../../types";
 import { electronStringToObject } from "../atom/utils";
 import { degToRad } from "three/src/math/MathUtils";
@@ -23,6 +23,7 @@ export const Scene = (): JSX.Element => {
   const [infoModalOpen, setInfoModalOpen] = useState(false);
   const [visualizerActive, setVisualizerActive] = useState(false);
 
+  // async call has to live outside of useEffect
   const getElementData = async () => {
     const response = await fetch(
       "https://raw.githubusercontent.com/Bowserinator/Periodic-Table-JSON/master/PeriodicTableJSON.json"
@@ -31,6 +32,7 @@ export const Scene = (): JSX.Element => {
     if (!response || !response.ok) {
       return;
     }
+
     const data = await response.json();
     const elements: PeriodicTableElement[] = data.elements || [];
 
@@ -39,11 +41,13 @@ export const Scene = (): JSX.Element => {
     });
     setPeriodicTableElements(sortedElements);
   };
+
   // On Component Load callback
   useEffect(() => {
     getElementData();
   }, []);
 
+  // memoize visible elements so that these only rerender when the data changes and the active element changes
   const visibleElements = useMemo<JSX.Element[]>(() => {
     if (!periodicTableElements) return [];
 
@@ -53,7 +57,7 @@ export const Scene = (): JSX.Element => {
       const { name, electron_configuration, symbol, number } = element;
       const electronConfig = electronStringToObject(electron_configuration);
       return (
-        <ElementTag
+        <ElementTile
           key={symbol}
           name={name}
           symbol={symbol}
@@ -76,8 +80,10 @@ export const Scene = (): JSX.Element => {
     return components;
   }, [periodicTableElements, activeElementIndex]);
 
+  //  the scene
   return (
     <div style={{ height: "100%" }}>
+      {/* Ui components using MUI */}
       <Box
         component="div"
         position={"absolute"}
@@ -100,7 +106,9 @@ export const Scene = (): JSX.Element => {
 
       <Canvas shadows camera={{ position: [0, 16, 42], fov: 30 }}>
         <OrbitControls />
-        <color attach="background" args={["#191920"]} />
+        {/* fallback background color */}
+        <color attach="background" args={["#192830"]} />
+        {/* lighting */}
         <ambientLight intensity={1} />
         <directionalLight intensity={2} castShadow />
         <pointLight
@@ -116,6 +124,8 @@ export const Scene = (): JSX.Element => {
           position={[-1, 4, -1]}
           penumbra={1}
         />
+
+        {/* Title Text */}
         <Text text="Atomic Structure" color="red" position={[-10, 8.5, -2]} />
         <Text text="Visualizer" color="red" position={[-6, 7, -2]} />
 
