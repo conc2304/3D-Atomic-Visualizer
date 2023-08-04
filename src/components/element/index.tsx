@@ -83,6 +83,7 @@ export const ElementTag = (props: ElementTagProps) => {
     : lighten(colorHex, 0.7);
 
   const springs = useSpring({
+    // if visualiser is active or hide is set then 0, otherwise if its active its 1 else 0.5
     scale: visualizerActive || hide ? 0 : isActive ? 1 : 0.5,
     infoIconScale: infoIconHovered ? 1.4 : 1,
     rotationY: rotationY,
@@ -260,11 +261,11 @@ export const ElementTag = (props: ElementTagProps) => {
           onPointerEnter={(e) => {
             e.stopPropagation();
             setVisualizerHover(true);
-            document.body.style.cursor = "pointer";
+            setCursorActive(true);
           }}
           onPointerLeave={() => {
             setVisualizerHover(false);
-            document.body.style.cursor = "default";
+            setCursorActive(false);
           }}
         >
           <Atom electronConfig={electronConfig} size={Number(atomicNumber)} />

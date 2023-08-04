@@ -1,10 +1,11 @@
 import { animated } from "@react-spring/three";
-import { cloneElement, useState } from "react";
+import { cloneElement, useRef, useState } from "react";
 import { degToRad } from "three/src/math/MathUtils";
 
 type ObjectCarouselProps = {
   objects: JSX.Element[];
   activeIndex?: number;
+  visualizerActive?: boolean;
 };
 
 /**
@@ -13,9 +14,8 @@ type ObjectCarouselProps = {
  * */
 
 export const ObjectCarousel = (props: ObjectCarouselProps) => {
-  const { objects, activeIndex = 0 } = props;
+  const { objects, activeIndex = 0, visualizerActive } = props;
 
-  const [visualizerActive, setVisualizerActive] = useState(false);
   const visibleItemRange = 2;
 
   return (
@@ -47,9 +47,7 @@ export const ObjectCarousel = (props: ObjectCarouselProps) => {
                   ...MeshObject.props,
                   hide: visualizerActive && !isActiveIndex,
                   key: `carouselItem-${i}`,
-                  onVisualizerActiveChange: (isActive: boolean) => {
-                    setVisualizerActive(isActive);
-                  },
+
                   isActive: isActiveIndex,
                 })}
               </animated.group>

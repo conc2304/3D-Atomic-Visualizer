@@ -15,11 +15,13 @@ import { InfoModal } from "../element/infoModal";
 import { Search } from "../ui/search";
 
 export const Scene = (): JSX.Element => {
+  // Component State
   const [periodicTableElements, setPeriodicTableElements] = useState<
     PeriodicTableElement[]
   >([]);
   const [activeElementIndex, setActiveElementIndex] = useState(0);
   const [infoModalOpen, setInfoModalOpen] = useState(false);
+  const [visualizerActive, setVisualizerActive] = useState(false);
 
   const getElementData = async () => {
     const response = await fetch(
@@ -37,6 +39,7 @@ export const Scene = (): JSX.Element => {
     });
     setPeriodicTableElements(sortedElements);
   };
+  // On Component Load callback
   useEffect(() => {
     getElementData();
   }, []);
@@ -60,6 +63,9 @@ export const Scene = (): JSX.Element => {
           onElementSelect={(nextActiveElem: number) => {
             // elements are base 1, ie there is no element with an atomic number of 0
             setActiveElementIndex(nextActiveElem - 1);
+          }}
+          onVisualizerActiveChange={(isActive: boolean) => {
+            setVisualizerActive(isActive);
           }}
           onInfoClick={() => {
             setInfoModalOpen(true);
@@ -116,6 +122,7 @@ export const Scene = (): JSX.Element => {
         <ObjectCarousel
           objects={visibleElements}
           activeIndex={activeElementIndex}
+          visualizerActive={visualizerActive}
         />
 
         <Text
