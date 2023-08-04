@@ -2,16 +2,17 @@
   "name": "threejs",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "16.x"
+  },
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.3",
     "@mui/material": "^5.14.2",
     "@react-spring/three": "^9.7.3",
-    "@react-three/cannon": "^6.5.2",
     "@react-three/drei": "^9.80.0",
     "@react-three/fiber": "^8.13.6",
-    "@react-three/flex": "^1.0.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -19,7 +20,6 @@
     "@types/node": "^16.18.39",
     "@types/react": "^18.2.17",
     "@types/react-dom": "^18.2.7",
-    "@use-gesture/react": "^10.2.27",
     "colortranslator": "^3.0.1",
     "csstype": "^3.1.2",
     "lodash.capitalize": "^4.2.1",

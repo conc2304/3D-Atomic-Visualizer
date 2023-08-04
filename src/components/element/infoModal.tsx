@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { ElementInfoKeys } from "../../constants";
-import { PeriodicTableElement } from "../atom/types";
+import { PeriodicTableElement } from "../../types";
 
 type InfoModalProps = {
   onClose?: () => void;
@@ -80,7 +80,7 @@ export const InfoModal = (props: InfoModalProps) => {
           <br />
 
           <Typography variant="body1" maxWidth={"350px"}>
-            <strong>Element Type: </strong>
+            <strong>Appearance: </strong>
             {appearance}
           </Typography>
           <br />

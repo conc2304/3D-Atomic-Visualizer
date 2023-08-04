@@ -6,7 +6,7 @@ import { Floor } from "./floor";
 import { Vector3 } from "three";
 import { Background } from "./background";
 import { ElementTag } from "../element";
-import { PeriodicTableElement } from "../atom/types";
+import { PeriodicTableElement } from "../../types";
 import { electronStringToObject } from "../atom/utils";
 import { degToRad } from "three/src/math/MathUtils";
 import { Box } from "@mui/system";

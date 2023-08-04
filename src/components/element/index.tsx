@@ -5,10 +5,10 @@ import { animated, config, useSpring } from "@react-spring/three";
 import { RoundedBox } from "@react-three/drei";
 import { Text } from "../ui/text";
 import { useEffect, useRef, useState } from "react";
-import { ElectronConfiguration } from "../atom/types";
+import { ElectronConfiguration } from "../../types";
 import { ColorTranslator } from "colortranslator";
 import { lighten } from "@mui/material";
-import { Atom } from "../atom/atom";
+import { Atom } from "../atom";
 import { degToRad } from "three/src/math/MathUtils";
 
 type ElementBackDropProps = {
@@ -19,7 +19,7 @@ type ElementBackDropProps = {
 
 const ElementBackDrop = (props: ElementBackDropProps) => {
   const { isHovered, hoverColor, color } = props;
-  // Reference to the mesh for user interactions or other purposes.
+
   const meshRef = useRef<Mesh>(null);
 
   // Define the spring animation for the material's color.
@@ -248,6 +248,7 @@ export const ElementTag = (props: ElementTagProps) => {
           </animated.group>
         </group>
       </animated.group>
+      {/* this means only render what is next if visualizerActive is truthy */}
       {visualizerActive && (
         <animated.mesh
           scale={springs.visualizerScale}

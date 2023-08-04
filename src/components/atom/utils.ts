@@ -1,4 +1,4 @@
-import { ElectronConfiguration, OrbitalType } from "./types";
+import { ElectronConfiguration, OrbitalType } from "../../types";
 
 // Take electron config string as "1s2 2s2 2p6" and convert to object
 export const electronStringToObject = (
@@ -7,11 +7,13 @@ export const electronStringToObject = (
   const electronConfig: ElectronConfiguration = {};
 
   // (\d+) = shell number // ([spdfgh]) = orbital type (\d+)
+  // matches are done in regex groups of each ()
   const matches = config.match(/(\d+)([spdfgh])(\d+)/g);
 
   if (!matches) return electronConfig;
 
   for (const match of matches) {
+    // split the matches
     const shellIndex = Number(match[0]);
     const orbitalType = match[1] as OrbitalType;
     const electronCount = Number(match.slice(2));

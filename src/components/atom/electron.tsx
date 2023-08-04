@@ -23,11 +23,11 @@ export const Electron = (props: ElectronProps) => {
   } = props;
 
   const ref = useRef<Mesh>(null);
-  const shellRadius = orbitRadius * (2 + shellIndex * 2); // Each shell will be 2 units apart
+  const shellRadius = orbitRadius * (2 + shellIndex * 2); // each shell will be 2 units apart
 
   useFrame(({ clock }) => {
     if (!ref.current) return;
-
+    // each frame move/orbit the electron round the center
     const elapsedTime = clock.getElapsedTime();
     const positionX = shellRadius * Math.cos(elapsedTime * orbitSpeed + offset); // offset to prevent overlapping paths
     const positionZ = shellRadius * Math.sin(elapsedTime * orbitSpeed + offset);

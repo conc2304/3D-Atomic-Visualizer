@@ -2,7 +2,7 @@ import { Mesh } from "three";
 import { Electron } from "./electron";
 import { Nucleus } from "./nucleus";
 import { Property } from "csstype";
-import { ElectronConfiguration } from "./types";
+import { ElectronConfiguration } from "../../types";
 import { degToRad } from "three/src/math/MathUtils";
 
 type AtomProps = {
@@ -33,7 +33,9 @@ export const Atom = (props: AtomProps) => {
         const electronShell = electronConfig[shellI];
         const electronCloud: (Mesh | JSX.Element)[] = [];
 
-        // visualize in the Bohr style
+        // visualize in the Bohr style - jsut a bunch of concentric circles
+
+        // counte electrons in shell in order to space them
         const totalElectrons = Object.values(electronShell).reduce(
           (prev, curr) => {
             return prev + curr;
@@ -41,15 +43,15 @@ export const Atom = (props: AtomProps) => {
           0
         );
 
-        const shellSpeed = shellI * 0.5;
         for (let i = 0; i < totalElectrons; i++) {
+          // spacing between electrons in the same shell
           const offset = degToRad(360 / totalElectrons) * i;
           electronCloud.push(
             <Electron
               key={`electron-${i * shellI}`}
               shellIndex={shellI}
               offset={offset}
-              orbitSpeed={shellSpeed}
+              orbitSpeed={0.5}
               orbitRadius={orbitRadius}
               size={electronSize}
               color={electronColor}

@@ -7,7 +7,10 @@ type ObjectCarouselProps = {
   activeIndex?: number;
 };
 
-// The object Carousel component is responsible for telling the carousel items where in space to be and their orientation based on props
+/**
+ *  The object Carousel component is responsible for telling the carousel items
+ *  where in space to be and their orientation based on props
+ * */
 
 export const ObjectCarousel = (props: ObjectCarouselProps) => {
   const { objects, activeIndex = 0 } = props;

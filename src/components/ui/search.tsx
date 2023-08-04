@@ -1,7 +1,7 @@
 import { Autocomplete, InputAdornment, TextField, Box } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
-import { PeriodicTableElement } from "../atom/types";
+import { PeriodicTableElement } from "../../types";
 
 type SearchProps = {
   options: PeriodicTableElement[];
