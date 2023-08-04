@@ -52,7 +52,7 @@ export const InfoModal = (props: InfoModalProps) => {
           sx={{
             position: "relative",
             zIndex: 10,
-            width: "40vw",
+            width: "450px",
             color: "cyan",
           }}
         >
@@ -99,7 +99,8 @@ export const InfoModal = (props: InfoModalProps) => {
           >
             <List sx={{ pt: 0 }}>
               {Object.entries({ ...rest }).map(([key, value]) => {
-                if (!ElementInfoKeys.includes(key)) return null;
+                if (!ElementInfoKeys.includes(key) || !key || !value)
+                  return null;
 
                 return (
                   <ListItem key={key}>

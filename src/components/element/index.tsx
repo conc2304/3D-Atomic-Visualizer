@@ -30,7 +30,7 @@ const ElementBackDrop = (props: ElementBackDropProps) => {
 
   return (
     <RoundedBox ref={meshRef} args={[10, 8, 0.5]} radius={0.2} smoothness={4}>
-      {/* @ts-ignore */}
+      {/* @ts-expect-error these springs types are just throwing errors left and right */}
       <animated.meshStandardMaterial color={springs.color} />
     </RoundedBox>
   );

@@ -20,7 +20,7 @@ export const Text = (props: TextProps, ref: any) => {
 
   return (
     <mesh {...meshProps}>
-      {/* @ts-ignore */}
+      {/* @ts-expect-error this is not a JSX element so not sure why the compiler is complaining that it should be */}
       <textGeometry args={[text, { font, size: size, height: height }]} />
       <meshPhysicalMaterial attach="material" color={color} />
     </mesh>
