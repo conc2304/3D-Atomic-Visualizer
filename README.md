@@ -8,7 +8,7 @@ Course:  CS50 (Harvard Extention School Summer 2023) \
 Project Title: 3D Atomic Visualizer \
 Project Video: https://youtu.be/1rKQbis-Bmw \
 Github Repo: https://github.com/conc2304/3D-Atomic-Visualizer \
-Github Page: https://conc2304.github.io/3D-Atomic-Visualizer/ \
+Github Page: https://conc2304.github.io/3D-Atomic-Visualizer/ 
 
 ## 2. Quickstart Guide / Prerequisites
 This project is built using Node.js. Therefore, you must have Node.js and npm installed on your computer. If you don't have Node.js installed, the project will not function as intended.
